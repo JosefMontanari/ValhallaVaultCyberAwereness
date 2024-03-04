@@ -29,12 +29,62 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+	.AddRoles<IdentityRole>()
 	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddSignInManager()
 	.AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+using (ServiceProvider sp = builder.Services.BuildServiceProvider())
+{
+	var context = sp.GetRequiredService<ApplicationDbContext>();
+	var signInManager = sp.GetRequiredService<SignInManager<ApplicationUser>>();
+	var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
+	// Kolla om det finns en databas
+	context.Database.Migrate();
+
+	ApplicationUser newUser = new()
+	{
+		UserName = "admin",
+		Email = "adminUser@mail.com",
+		EmailConfirmed = true
+
+	};
+
+	var user = signInManager.UserManager.FindByEmailAsync(newUser.Email)
+		/*Kör Metoden synkront! Viktigt!*/
+		.GetAwaiter().GetResult();
+
+	if (user == null)
+	{
+		// Skapa ny user
+		signInManager.UserManager.CreateAsync(newUser, "Password1234!")
+			// Kör metoden Synkront! Viktigt!
+			.GetAwaiter().GetResult();
+
+		// Kolla om adminrollen existerar
+		bool adminRoleExists = roleManager.RoleExistsAsync("Admin")
+			// Kör metoden Synkront! Viktigt!
+			.GetAwaiter().GetResult();
+		if (!adminRoleExists)
+		{
+			// Skapa adminrollen
+			IdentityRole adminRole = new()
+			{
+				Name = "Admin",
+			};
+
+			roleManager.CreateAsync(adminRole)
+				// Kör metoden Synkront! Viktigt!
+				.GetAwaiter().GetResult();
+		}
+		// Tilldela adminrollen till den nya användaren
+		signInManager.UserManager.AddToRoleAsync(newUser, "Admin")
+			// Kör metoden Synkront! Viktigt!
+			.GetAwaiter().GetResult();
+	}
+}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
