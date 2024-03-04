@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-	.AddInteractiveServerComponents();
+    .AddInteractiveServerComponents();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -17,22 +17,22 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddAuthentication(options =>
-	{
-		options.DefaultScheme = IdentityConstants.ApplicationScheme;
-		options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-	})
-	.AddIdentityCookies();
+    {
+        options.DefaultScheme = IdentityConstants.ApplicationScheme;
+        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+    })
+    .AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-	options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
 	.AddRoles<IdentityRole>()
-	.AddEntityFrameworkStores<ApplicationDbContext>()
-	.AddSignInManager()
-	.AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 using (ServiceProvider sp = builder.Services.BuildServiceProvider())
@@ -53,19 +53,19 @@ using (ServiceProvider sp = builder.Services.BuildServiceProvider())
 	};
 
 	var user = signInManager.UserManager.FindByEmailAsync(newUser.Email)
-		/*Kˆr Metoden synkront! Viktigt!*/
+		/*K√∂r Metoden synkront! Viktigt!*/
 		.GetAwaiter().GetResult();
 
 	if (user == null)
 	{
 		// Skapa ny user
 		signInManager.UserManager.CreateAsync(newUser, "Password1234!")
-			// Kˆr metoden Synkront! Viktigt!
+			// K√∂r metoden Synkront! Viktigt!
 			.GetAwaiter().GetResult();
 
 		// Kolla om adminrollen existerar
 		bool adminRoleExists = roleManager.RoleExistsAsync("Admin")
-			// Kˆr metoden Synkront! Viktigt!
+			// K√∂r metoden Synkront! Viktigt!
 			.GetAwaiter().GetResult();
 		if (!adminRoleExists)
 		{
@@ -76,38 +76,61 @@ using (ServiceProvider sp = builder.Services.BuildServiceProvider())
 			};
 
 			roleManager.CreateAsync(adminRole)
-				// Kˆr metoden Synkront! Viktigt!
+				// K√∂r metoden Synkront! Viktigt!
 				.GetAwaiter().GetResult();
 		}
-		// Tilldela adminrollen till den nya anv‰ndaren
+		// Tilldela adminrollen till den nya anv√§ndaren
 		signInManager.UserManager.AddToRoleAsync(newUser, "Admin")
-			// Kˆr metoden Synkront! Viktigt!
+			// K√∂r metoden Synkront! Viktigt!
 			.GetAwaiter().GetResult();
 	}
 }
+//f√∂r api
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+            policy =>
+            {
+                policy.AllowAnyOrigin();
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+            });
+}
+
+);
 var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseMigrationsEndPoint();
+    app.UseMigrationsEndPoint();
 }
 else
 {
-	app.UseExceptionHandler("/Error", createScopeForErrors: true);
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
-
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-	.AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+//f√∂r api
+app.MapControllers();
+//f√∂r api
 
 app.Run();
