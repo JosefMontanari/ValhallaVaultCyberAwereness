@@ -118,9 +118,9 @@ builder.Services.AddCors(options =>
 				policy.AllowAnyHeader();
 				policy.AllowAnyMethod();
 			});
-}
+});
 
-);
+
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
