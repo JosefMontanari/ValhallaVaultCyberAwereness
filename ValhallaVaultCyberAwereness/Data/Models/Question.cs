@@ -10,8 +10,6 @@ public class Question
 
     public string Questions { get; set; }
 
-    public List<Question> QuestionsList { get; set; }
-
     public List<string> PossibleAnswers { get; set; }
 
     public string CorrectAnswer { get; set; }
