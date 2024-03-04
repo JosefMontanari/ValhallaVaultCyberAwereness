@@ -1,24 +1,21 @@
-﻿using ValhallaVaultCyberAwereness.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ValhallaVaultCyberAwereness.Data;
+using ValhallaVaultCyberAwereness.Data.Models;
 
 
 namespace ValhallaVaultCyberAwereness.Service
 {
-    public class QuestionRepo(AppDbContext context)
+    public class QuestionRepo(ApplicationDbContext context)
     {
-        private readonly AppDbContext _context;
-
-        public QuestionRepo(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context;
 
         public async Task<List<Category>> GetAllCategoriesAsync()
         {
-            return await _context.Questions.ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return await _context.Categories.FirstOrDefualtAsync(c => c.Id == id);
+            return await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public async Task AddCategoryAsync(Category categoryToAdd)
@@ -29,11 +26,11 @@ namespace ValhallaVaultCyberAwereness.Service
 
         public async Task UpdateCategoryAsync(Category updatedCategory)
         {
-            Category? categoryToUpdate = await GetCategoryByIdAsync(updatedCategory.Id);
+            Category? categoryToUpdate = await GetCategoryByIdAsync(updatedCategory.CategoryId);
 
             if (categoryToUpdate == null)
             {
-                categoryToUpdate.Name = updatedCategory.Name;
+                categoryToUpdate.Categories = updatedCategory.Categories;
 
                 await _context.SaveChangesAsync();
             }
