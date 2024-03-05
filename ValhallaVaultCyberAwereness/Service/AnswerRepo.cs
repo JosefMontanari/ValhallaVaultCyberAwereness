@@ -6,15 +6,18 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class AnswerRepo(ApplicationDbContext context)
     {
+        private readonly QuestionRepo questionRepo;
+
         private readonly ApplicationDbContext _context;
 
         public async Task<List<AnswerUser>> GetAllAnswersAsync()
         {
+
             return await _context.UserAnswers.ToListAsync();
         }
         public async Task<AnswerUser?> GetUserAnswersByIdAsync(int id)
         {
-            return await _context.UserAnswers.FirstOrDefaultAsync(u => u.UserAnswersId == id);
+            return await _context.UserAnswers.FirstOrDefaultAsync(u => u.id == id);
         }
 
         public async Task AddUserAnswersAsync(AnswerUser userAnswersToAdd)
@@ -22,13 +25,14 @@ namespace ValhallaVaultCyberAwereness.Service
             await _context.UserAnswers.AddAsync(userAnswersToAdd);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateUserAnswersAsync(AnswerUser userAnswersToUpdate)
+
+        public async Task UpdateUserAnswersAsync(Question oldAnswer)
         {
-            AnswerUser? userAnswersUpdate = await GetUserAnswersByIdAsync(userAnswersToUpdate UserAnswerId);
+            Question? userAnswersToUpdate = await questionRepo.GetQuestionByIdAsync(oldAnswer.QuestionId);
 
             if (userAnswersToUpdate != null)
             {
-                userAnswersToUpdate.UserAnswers = userAnswersToUpdate.UserAnswers;
+                userAnswersToUpdate.CorrectAnswer = oldAnswer.CorrectAnswer;
 
                 await _context.SaveChangesAsync();
             }
