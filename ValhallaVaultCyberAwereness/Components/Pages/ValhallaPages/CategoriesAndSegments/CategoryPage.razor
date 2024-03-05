@@ -1,0 +1,56 @@
+﻿@page "/categorypage"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+
+@attribute [Authorize]
+
+<h3>CategoryPage</h3>
+
+
+
+@*  Gör en dropdown för Cateogires: *@
+ @if (categories != null && categories.Any())
+{
+    <label>Select a Category:</label> 
+    <select @onchange="OnCategorySelected"> 
+        <option value="">- Select Category -</option>
+     @*    Gå igenom alla catees *@
+        @foreach (var category in categories)
+        {
+            <option value="@category.Categories">@category.Categories</option>
+        }
+    </select>
+
+}
+else
+{
+    <p>No categories found.</p>
+}
+
+
+@code {
+    private List<Category> categories;
+    [Inject]
+    private CategoryRepo categoryRepo { get; set; }
+
+    private string selectedCategory;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Hämta alla categoeies.
+        categories = await categoryRepo.GetAllCategoriesAsync();
+
+    }
+
+    private void OnCategorySelected(ChangeEventArgs args)
+    {
+        selectedCategory = args.Value.ToString();
+     
+ 
+        StateHasChanged(); // Re-rendar sidan/komponenten om något har ändrats.
+    }
+
+
+}

@@ -1,0 +1,46 @@
+﻿@* @page "/Admin"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Service
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+@inject QuestionRepo questionRepo
+
+<h3>AdminDashboard</h3>
+
+<h1>All Categories:</h1>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Category Name</th>
+			<th>Subcategories</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach(var category in questionRepo.Categories)
+		{
+			<tr>
+				<td>@category.Name</td>
+				<td>
+					<ol>
+					@foreach(var segment in category.Segments)
+					{
+						<li>
+							@segment.Name
+						</li>
+					}
+				</ol>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await questionRepo.GetAllCategoriesAsync();
+
+	}
+} *@
