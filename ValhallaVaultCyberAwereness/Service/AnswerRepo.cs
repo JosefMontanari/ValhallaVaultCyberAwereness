@@ -10,6 +10,7 @@ namespace ValhallaVaultCyberAwereness.Service
 
         private readonly ApplicationDbContext _context;
 
+
         public async Task<List<AnswerUser>> GetAllAnswersAsync()
         {
 

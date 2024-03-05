@@ -6,7 +6,7 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class QuestionRepo(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext context;
+
 
         public async Task<List<Question>> GetAllQuestionAsync()
         {
