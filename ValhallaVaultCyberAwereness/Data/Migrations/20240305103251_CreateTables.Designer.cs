@@ -12,8 +12,8 @@ using ValhallaVaultCyberAwereness.Data;
 namespace ValhallaVaultCyberAwereness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240304124752_Initi")]
-    partial class Initi
+    [Migration("20240305103251_CreateTables")]
+    partial class CreateTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,32 @@ namespace ValhallaVaultCyberAwereness.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.AnswerUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsAnswerCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAnswers");
+                });
+
             modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -256,11 +282,11 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Questions")
+                    b.Property<string>("QuestionString")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SegmentId")
+                    b.Property<int?>("SegmentId")
                         .HasColumnType("int");
 
                     b.HasKey("QuestionId");
@@ -343,13 +369,28 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.AnswerUser", b =>
+                {
+                    b.HasOne("ValhallaVaultCyberAwereness.Data.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ValhallaVaultCyberAwereness.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.Question", b =>
                 {
                     b.HasOne("ValhallaVaultCyberAwereness.Data.Models.Segment", "Segment")
                         .WithMany("Question")
-                        .HasForeignKey("SegmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SegmentId");
 
                     b.Navigation("Segment");
                 });
