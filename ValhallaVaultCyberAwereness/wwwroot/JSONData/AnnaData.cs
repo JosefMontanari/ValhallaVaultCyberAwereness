@@ -14,8 +14,8 @@ public class Categories
             new Question
             {
                 QuestionId = 1,
-                Questions = "Penetration tester - what does he/she do?",
-                PossibleAnswers = new List<string> { "hacking people", "testing code", "eating ass" },
+                Questions = "injection tester - what does he/she do?",
+                PossibleAnswers = new List<string> { "hacking people", "testing code", "server management" },
                 CorrectAnswer = "testing code",
                 SegmentId = 1  // segment 1
             },
@@ -23,7 +23,7 @@ public class Categories
             {
                 QuestionId = 2,
                 Questions = "What is red team doing??",
-                PossibleAnswers = new List<string> { "Cyberattacker", "Cyberdefender", "Penetratiing ass" },
+                PossibleAnswers = new List<string> { "Cyberattacker", "Cyberdefender", "Fotball team" },
                 CorrectAnswer = "Cyberattacker",
                 SegmentId = 2 // segmnt 2
             },
@@ -47,19 +47,19 @@ public class Segments
             new Segment
             {
                 SegmentId = 1,
-                SegmentTitle = "Penetration lover",
+                SegmentTitle = "Injecter",
                 CategoryId = 1 // tillhör categori 1
             },
             new Segment
             {
                 SegmentId = 2,
-                SegmentTitle = "Ass-Penetration king ",
+                SegmentTitle = "Red questions",
                 CategoryId = 1 // categori 1
             },
             new Segment
             {
                 SegmentId = 3,
-                SegmentTitle = "Penetratiion defender",
+                SegmentTitle = "blue questions",
                 CategoryId = 2 // tillhör categori 2
             }
 
