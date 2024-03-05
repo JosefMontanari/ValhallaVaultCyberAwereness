@@ -8,7 +8,7 @@ namespace ValhallaVaultCyberAwereness.Service
     public class CategoryRepo(ApplicationDbContext context)
     {
 
-        private readonly ApplicationDbContext context;
+        //private readonly ApplicationDbContext context;
 
         private readonly ApplicationDbContext _context;
 
