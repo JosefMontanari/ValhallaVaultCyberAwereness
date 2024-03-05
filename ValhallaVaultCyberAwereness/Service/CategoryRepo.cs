@@ -7,7 +7,11 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class CategoryRepo(ApplicationDbContext context)
     {
+
+        private readonly ApplicationDbContext context;
+
         private readonly ApplicationDbContext _context;
+
 
 
         public List<Category> categories { get; set; } = new List<Category>();
@@ -23,13 +27,13 @@ namespace ValhallaVaultCyberAwereness.Service
         }
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+            return await context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public async Task AddCategoryAsync(Category categoryToAdd)
         {
-            await _context.Categories.AddAsync(categoryToAdd);
-            await _context.SaveChangesAsync();
+            await context.Categories.AddAsync(categoryToAdd);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateCategoryAsync(Category updatedCategory)
@@ -40,7 +44,7 @@ namespace ValhallaVaultCyberAwereness.Service
             {
                 categoryToUpdate.Categories = updatedCategory.Categories;
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
 
@@ -48,8 +52,8 @@ namespace ValhallaVaultCyberAwereness.Service
         {
             try
             {
-                _context.Categories.Remove(categoryToDelete);
-                await _context.SaveChangesAsync();
+                context.Categories.Remove(categoryToDelete);
+                await context.SaveChangesAsync();
             }
             catch
             {

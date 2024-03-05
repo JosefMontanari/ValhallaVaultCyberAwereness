@@ -25,11 +25,11 @@ namespace ValhallaVaultCyberAwereness.Service
 
         public async Task UpdateQuestionAsync(Question updatedQuestion)
         {
-            Question? updateQuestion = await GetQuestionByIdAsync(updatedQuestion.QuestionId);
+            Question? QuestionUpdate = await GetQuestionByIdAsync(updatedQuestion.QuestionId);
 
-            if (updateQuestion != null)
+            if (QuestionUpdate != null)
             {
-                updateQuestion.Questions = updatedQuestion.Questions;
+                QuestionUpdate.Questions = updatedQuestion.Questions;
 
                 await context.SaveChangesAsync();
             }
@@ -47,5 +47,4 @@ namespace ValhallaVaultCyberAwereness.Service
             }
         }
     }
-
 }
