@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValhallaVaultCyberAwereness.Data;
 
@@ -11,9 +12,11 @@ using ValhallaVaultCyberAwereness.Data;
 namespace ValhallaVaultCyberAwereness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240304124752_Initi")]
+    partial class Initi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,32 +223,6 @@ namespace ValhallaVaultCyberAwereness.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.AnswerUser", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<bool>("IsAnswerCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserAnswers");
-                });
-
             modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -283,7 +260,7 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SegmentId")
+                    b.Property<int>("SegmentId")
                         .HasColumnType("int");
 
                     b.HasKey("QuestionId");
@@ -291,15 +268,6 @@ namespace ValhallaVaultCyberAwereness.Migrations
                     b.HasIndex("SegmentId");
 
                     b.ToTable("Questions");
-
-                    b.HasData(
-                        new
-                        {
-                            QuestionId = 1,
-                            CorrectAnswer = "Sunny",
-                            PossibleAnswers = "[\"Rainy\",\"Sunny\",\"Wet\"]",
-                            Questions = "Whats the weather today?"
-                        });
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.Segment", b =>
@@ -375,28 +343,13 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.AnswerUser", b =>
-                {
-                    b.HasOne("ValhallaVaultCyberAwereness.Data.Models.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ValhallaVaultCyberAwereness.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.Question", b =>
                 {
                     b.HasOne("ValhallaVaultCyberAwereness.Data.Models.Segment", "Segment")
                         .WithMany("Question")
-                        .HasForeignKey("SegmentId");
+                        .HasForeignKey("SegmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Segment");
                 });

@@ -10,7 +10,7 @@ public class Segment
 
     public Category Category { get; set; } // Har en category
 
-    public int CategoryId { get; set; }
+    public int CategoryId { get; set; } // f-key
 
     public List<Question> Question { get; set; } = new List<Question>(); // har flera questions
 
