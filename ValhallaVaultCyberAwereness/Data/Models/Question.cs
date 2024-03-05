@@ -16,7 +16,7 @@ public class Question
 
     // public bool IsCorrect {get; set;} <- Ta denna senare när allt displayas osv.
 
-    public Segment Segment { get; set; } // har en segment
+    public Segment? Segment { get; set; } // har en segment
 
-    public int SegmentId { get; set; }
+    public int? SegmentId { get; set; }
 }

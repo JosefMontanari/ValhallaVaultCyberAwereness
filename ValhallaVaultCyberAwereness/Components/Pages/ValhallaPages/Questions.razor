@@ -1,5 +1,6 @@
 ﻿@page "/questions"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
 @using Newtonsoft.Json
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
@@ -7,16 +8,36 @@
 @rendermode InteractiveServer
 <h3>Questions</h3>
 
-@foreach(var question in AllQuestions)
+@if (AllQuestions != null)
+{
+    @foreach (var question in AllQuestions)
 {
     <h1>@question.Questions</h1>
 }
 
+}
+
+@if (QuestionsListFromDb != null)
+{
+@foreach (var question in QuestionsListFromDb)
+{
+    <h1>@question.Questions</h1>
+}
+}
+
+
 @code {
-	public List<Question>? AllQuestions { get; set; }
+    public List<Question>? AllQuestions { get; set; }
     public List<Segment> Segments { get; set; }
+
+    [Inject]  //behövs annars får vi object reference not set to an instance of an object.. Vi tar bort denna kommentar sen //Tim
+    public Data.ApplicationDbContext _context { get; set; }  
+    public List<Question>? QuestionsListFromDb { get; set; } 
+
 	protected override async Task OnInitializedAsync()
 	{
+        QuestionsListFromDb = await _context.Questions.ToListAsync();
+
         AllQuestions = new List<Question>
         {
             new Question
