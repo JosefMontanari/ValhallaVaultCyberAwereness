@@ -5,7 +5,7 @@ using ValhallaVaultCyberAwereness.Data.Models;
 
 namespace ValhallaVaultCyberAwereness.Service
 {
-    public class QuestionRepo(ApplicationDbContext context)
+    public class CategoryRepo(ApplicationDbContext context)
     {
         private readonly ApplicationDbContext _context;
         public List<Category> categories { get; set; } = new List<Category>();
