@@ -8,22 +8,22 @@ namespace ValhallaVaultCyberAwereness.Service
     {
         private readonly QuestionRepo questionRepo;
 
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext context;
 
         public async Task<List<AnswerUser>> GetAllAnswersAsync()
         {
 
-            return await _context.UserAnswers.ToListAsync();
+            return await context.UserAnswers.ToListAsync();
         }
         public async Task<AnswerUser?> GetUserAnswersByIdAsync(int id)
         {
-            return await _context.UserAnswers.FirstOrDefaultAsync(u => u.id == id);
+            return await context.UserAnswers.FirstOrDefaultAsync(u => u.id == id);
         }
 
         public async Task AddUserAnswersAsync(AnswerUser userAnswersToAdd)
         {
-            await _context.UserAnswers.AddAsync(userAnswersToAdd);
-            await _context.SaveChangesAsync();
+            await context.UserAnswers.AddAsync(userAnswersToAdd);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateUserAnswersAsync(Question oldAnswer)
@@ -34,15 +34,15 @@ namespace ValhallaVaultCyberAwereness.Service
             {
                 userAnswersToUpdate.CorrectAnswer = oldAnswer.CorrectAnswer;
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
         public async Task DeleteUserAnswersAsync(AnswerUser userAnswersToDelete)
         {
             try
             {
-                _context.UserAnswers.Remove(userAnswersToDelete);
-                await _context.SaveChangesAsync();
+                context.UserAnswers.Remove(userAnswersToDelete);
+                await context.SaveChangesAsync();
             }
             catch
             {
