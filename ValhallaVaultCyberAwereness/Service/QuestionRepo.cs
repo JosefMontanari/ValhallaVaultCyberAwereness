@@ -6,21 +6,21 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class QuestionRepo(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext context;
 
         public async Task<List<Question>> GetAllQuestionAsync()
         {
-            return await _context.Questions.ToListAsync();
+            return await context.Questions.ToListAsync();
         }
 
         public async Task<Question?> GetQuestionByIdAsync(int id)
         {
-            return await _context.Questions.FirstOrDefaultAsync(q => q.QuestionId == id);
+            return await context.Questions.FirstOrDefaultAsync(q => q.QuestionId == id);
         }
         public async Task AddQuestionAsync(Question questionToAdd)
         {
-            await _context.Questions.AddAsync(questionToAdd);
-            await _context.SaveChangesAsync();
+            await context.Questions.AddAsync(questionToAdd);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateQuestionAsync(Question updatedQuestion)
@@ -31,15 +31,15 @@ namespace ValhallaVaultCyberAwereness.Service
             {
                 updateQuestion.Questions = updatedQuestion.Questions;
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
         public async Task DeleteQuestionAsync(Question questionToDelete)
         {
             try
             {
-                _context.Questions.Remove(questionToDelete);
-                await _context.SaveChangesAsync();
+                context.Questions.Remove(questionToDelete);
+                await context.SaveChangesAsync();
             }
             catch
             {
