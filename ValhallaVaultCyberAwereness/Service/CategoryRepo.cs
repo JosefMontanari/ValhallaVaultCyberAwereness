@@ -10,10 +10,13 @@ namespace ValhallaVaultCyberAwereness.Service
 
         private readonly ApplicationDbContext context;
 
+<<<<<<< HEAD
+=======
         private readonly ApplicationDbContext _context;
 
 
 
+>>>>>>> 312fe7119a02698cd4998df291d657d7b48cd39b
         public List<Category> categories { get; set; } = new List<Category>();
         public async Task<List<Category>> GetAllCategoriesAsync()
         {
