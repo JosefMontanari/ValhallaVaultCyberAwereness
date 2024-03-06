@@ -1,0 +1,56 @@
+﻿@page "/"
+@using ValhallaVaultCyberAwereness.Components.Layout
+@layout EmptyLayout
+
+
+
+
+
+    <div class="container py-4">
+
+        <header class="pb-3 mb-4 border-bottom">
+        <img src="Images/logga.png" style="height: 50px; width: 50px;">
+        <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
+        </header>
+
+
+    <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
+        <video autoplay muted loop style="position: absolute; object-fit: cover; z-index: -1;">
+            <source src="/Videos/circuit.mp4" type="video/mp4">
+
+        </video>
+        <div class="container-fluid py-5">
+    
+                <h1 class=" display-6 fw-bold">Valhalla Vault</h1>
+                <p class="col-md-8 fs-8">
+                    Welcome to our Valhalla vault App!<br />
+                    Our experts, with extensive experience in the field of cybersecurity,
+                    provide personalized guidance,<br />
+                    adapting the training to your specific business needs. <br />
+                    This ensures that your team is not just prepared, but proactive in facing digital challenges.
+                </p>
+            <p class="col-md-8 fs-8 ">Fortify your company's digital defenses with us.</p>
+         </div>
+    </div>
+    <div class="jumbotron jumbotron-fluid ">
+        <div class="container-fluid py-3 text-center">
+            <div class="row mt-5">
+                <div class="col">
+                <a href="/Account/login" <button class="btn btn-secondary btn-lg" type="button" >Login</button> </a>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <a href="/Account/Register" <button class="btn btn-secondary btn-lg" type="button">Register</button> </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="pt-3 mt-4 text-body-secondary border-top"></footer>
+</div>
+
+@code {
+  
+  
+
+}
