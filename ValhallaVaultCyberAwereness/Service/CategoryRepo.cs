@@ -5,56 +5,54 @@ using ValhallaVaultCyberAwereness.Data.Models;
 
 namespace ValhallaVaultCyberAwereness.Service
 {
-	public class CategoryRepo(ApplicationDbContext context)
-	{
+    public class CategoryRepo(ApplicationDbContext context)
+    {
+        public List<Category> categories { get; set; } = new List<Category>();
+        public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            categories = await context.Categories
+                .Include(x => x.Segments)
+                .ToListAsync();
 
+            return await context.Categories.
+                Include(x => x.Segments).ToListAsync();
 
-		public List<Category> categories { get; set; } = new List<Category>();
-		public async Task<List<Category>> GetAllCategoriesAsync()
-		{
-			categories = await context.Categories
-				.Include(x => x.Segments)
-				.ToListAsync();
+        }
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+        }
 
-			return await context.Categories.
-				Include(x => x.Segments).ToListAsync();
+        public async Task AddCategoryAsync(Category categoryToAdd)
+        {
+            await context.Categories.AddAsync(categoryToAdd);
+            await context.SaveChangesAsync();
+        }
 
-		}
-		public async Task<Category?> GetCategoryByIdAsync(int id)
-		{
-			return await context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
-		}
+        public async Task UpdateCategoryAsync(Category updatedCategory)
+        {
+            Category? categoryToUpdate = await GetCategoryByIdAsync(updatedCategory.CategoryId);
 
-		public async Task AddCategoryAsync(Category categoryToAdd)
-		{
-			await context.Categories.AddAsync(categoryToAdd);
-			await context.SaveChangesAsync();
-		}
+            if (categoryToUpdate == null)
+            {
+                categoryToUpdate.Categories = updatedCategory.Categories;
 
-		public async Task UpdateCategoryAsync(Category updatedCategory)
-		{
-			Category? categoryToUpdate = await GetCategoryByIdAsync(updatedCategory.CategoryId);
+                await context.SaveChangesAsync();
+            }
+        }
 
-			if (categoryToUpdate == null)
-			{
-				categoryToUpdate.Categories = updatedCategory.Categories;
+        public async Task DeleteCategoryAsync(Category categoryToDelete)
+        {
+            try
+            {
+                context.Categories.Remove(categoryToDelete);
+                await context.SaveChangesAsync();
+            }
+            catch
+            {
 
-				await context.SaveChangesAsync();
-			}
-		}
+            }
+        }
 
-		public async Task DeleteCategoryAsync(Category categoryToDelete)
-		{
-			try
-			{
-				context.Categories.Remove(categoryToDelete);
-				await context.SaveChangesAsync();
-			}
-			catch
-			{
-
-			}
-		}
-
-	}
+    }
 }
