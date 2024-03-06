@@ -177,15 +177,18 @@
 
 	public async Task EditCategory(int id)
 	{
-
+		string type = "Category";
+		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
 
 	public async Task EditSegment(int id)
 	{
-
+		string type = "Segment";
+		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
 	public async Task EditQuestion(int id)
 	{
-		
+		string type = "Question";
+		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
 }
