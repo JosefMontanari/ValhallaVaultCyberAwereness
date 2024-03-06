@@ -15,44 +15,71 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
+@using ValhallaVaultCyberAwereness.Components.Layout
+@layout EmptyLayout
+
+
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
+    <div class="container py-4">
+    <header class="pb-1 border-bottom">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="Images/logga.png" style="height: 50px; width: 50px;">
+            </div>
+            <div class="col">
+                <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
+            </div>
+        </div>
+    </header>
 
-<div class="row">
+    <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
+        <video autoplay muted loop style="position: absolute; object-fit: cover; z-index: -1;">
+            <source src="/Videos/circuit.mp4" type="video/mp4">
+        </video>
+        <div class="container-fluid py-5 d-flex justify-content-center align-items-center">
+
+        
+     
     <div class="col-md-4">
+                <h1>Register</h1>
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
             <h2>Create a new account.</h2>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <div class="form-floating mb-3" style="color:black">
+                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
                 <label for="email">Username</label>
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
+                    <div class="form-floating mb-3" style="color:black">
                 <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label for="password">Password</label>
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
+                    <div class="form-floating mb-3" style="color:black">
                 <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <div>
+                        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            </div>
+       
+            <div>
+                        <p class="pt-1">
+                            <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Login", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))" style="color: white">Already have a Account? Sign in.</a>
+                        </p>
+            </div>
         </EditForm>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
+
 </div>
+</div>
+</div>
+
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
