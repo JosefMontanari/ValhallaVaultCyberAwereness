@@ -10,20 +10,32 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
+@using ValhallaVaultCyberAwereness.Components.Layout
+@layout EmptyLayout
+
 <PageTitle>Log in</PageTitle>
 
-@* <h1>Log in</h1> *@
+    <div class="container py-4">
+    <header class="pb-1 border-bottom">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="Images/logga.png" style="height: 50px; width: 50px;">
+            </div>
+            <div class="col">
+                <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
+            </div>
+        </div>
+    </header>
 
 <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
     <video autoplay muted loop style="position: absolute; object-fit: cover; z-index: -1;">
         <source src="/Videos/circuit.mp4" type="video/mp4">
-
     </video>
-    <div class="row">
-        <h1>Log in</h1>
+        <div class="container-fluid py-5 d-flex justify-content-center align-items-center">
+    
 
         <div class="col-md-4">
-
+                <h1>Log in</h1>
             <section>
                 <StatusMessage Message="@errorMessage" />
                 <EditForm Model="Input" method="post" OnSubmit="LoginUser" FormName="login">
@@ -31,12 +43,12 @@
                     <h2>Use a local account to log in.</h2>
                     <hr />
                     <ValidationSummary class="text-danger" role="alert" />
-                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3" style="color:black">
                         <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <label for="email" class="form-label">Username</label>
                         <ValidationMessage For="() => Input.Email" class="text-danger" />
                     </div>
-                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3" style="color:black">
                         <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                         <label for="password" class="form-label">Password</label>
                         <ValidationMessage For="() => Input.Password" class="text-danger" />
@@ -50,15 +62,15 @@
                     <div>
                         <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                     </div>
-                    <div>
+                    <div  p class="pt-1">
                         <p>
-                            <a href="Account/ForgotPassword">Forgot your password?</a>
+                                <a href="Account/ForgotPassword" style="color: white">Forgot your password?</a>
                         </p>
                         <p>
-                            <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
+                                <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))" style="color: white">Register as a new user</a>
                         </p>
                         <p>
-                            <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                                <a href="Account/ResendEmailConfirmation" style="color: white">Resend email confirmation</a>
                         </p>
                     </div>
                 </EditForm>
@@ -67,6 +79,7 @@
      
     </div>
 
+</div>
 </div>
 
 @code {
