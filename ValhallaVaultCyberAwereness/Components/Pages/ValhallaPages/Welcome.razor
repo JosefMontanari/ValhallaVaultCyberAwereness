@@ -2,7 +2,8 @@
 @using ValhallaVaultCyberAwereness.Components.Layout
 @layout EmptyLayout
 
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 
 
@@ -62,7 +63,14 @@
 </div>
 
 @code {
-  
-  
+   
+    protected override async Task OnInitializedAsync()
+    {
+        var isUserSignedin = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (isUserSignedin != null && isUserSignedin.User.Identity.IsAuthenticated)
+    {
+            NavigationManager.NavigateTo("/Home");
+        }
+    }
 
 }
