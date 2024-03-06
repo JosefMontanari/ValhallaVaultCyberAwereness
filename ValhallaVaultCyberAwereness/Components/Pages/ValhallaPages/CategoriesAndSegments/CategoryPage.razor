@@ -16,7 +16,9 @@
     @foreach (var category in categories)
     {
         <div>
-            <h4>@category.Categories</h4> <!--Displaya alla Katerogier-->
+            <h4>
+                <a href="/segmentpage/@category.CategoryId" class="btn btn-primary">@category.Categories</a>
+            </h4> <!-- Display alla Katerogier -->
             <p>@InformationAboutACategory(category.CategoryId)</p> <!--Displaya lite information om dom.-->
             <p>I denna kategori ingår följande segment: @category.Categories</p>
             <ul>
@@ -35,7 +37,6 @@
 
 
 
-
 @code {
     private List<Category> categories;
     [Inject]
@@ -44,8 +45,6 @@
     private string selectedCategory;
 
     private List<AnswerUser> userAnswers;
-    
-
 
 
     protected override async Task OnInitializedAsync()
@@ -60,14 +59,13 @@
         selectedCategory = args.Value.ToString();
 
         await InvokeAsync(StateHasChanged);
-        //StateHasChanged(); // Re-rendar sidan/komponenten om något har ändrats.
+    
     }
 
 
 
     private string InformationAboutACategory(int categoryId)
     {
-
         switch (categoryId)
         {
             case 1:

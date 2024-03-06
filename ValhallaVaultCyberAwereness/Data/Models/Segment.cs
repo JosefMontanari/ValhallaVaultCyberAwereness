@@ -31,6 +31,10 @@ public class Segment
             var userAnswer = userAnswers.FirstOrDefault(a => a.QuestionId == question.QuestionId)?.UserAnswer;
 
             // Se om svar är rätt, isåfall ++ 
+            if (userAnswer != null && userAnswer.Equals(question.CorrectAnswer, StringComparison.OrdinalIgnoreCase))
+            {
+                correctCount++;
+            }
         }
 
         return (double)correctCount / Question.Count * 100;
