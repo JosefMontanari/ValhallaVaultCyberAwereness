@@ -6,11 +6,18 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class SegmentRepo(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext context;
+
+        public List<Segment> segments { get; set; } = new List<Segment>();
 
         public async Task<List<Segment>> GetAllSegmentAsync()
         {
-            return await context.Segments.ToListAsync();
+            segments = await context.Segments
+                .Include(q => q.Question)
+                .ToListAsync();
+
+            return await context.Segments
+                .Include(q => q.Question)
+                .ToListAsync();
         }
         public async Task<Segment?> GetSegmentByIdAsync(int id)
         {

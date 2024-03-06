@@ -12,6 +12,6 @@ public class Segment
 
     public int CategoryId { get; set; } // f-key
 
-    public List<Question> Question { get; set; } = new List<Question>(); // har flera questions
+    public List<Question> Question { get; set; } = new List<Question>(); // har flera questions 
 
 }

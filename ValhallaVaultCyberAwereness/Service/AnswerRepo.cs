@@ -8,13 +8,16 @@ namespace ValhallaVaultCyberAwereness.Service
     {
         private readonly QuestionRepo questionRepo;
 
-        private readonly ApplicationDbContext context;
-
+        public List<AnswerUser> answers { get; set; } = new List<AnswerUser>();
 
         public async Task<List<AnswerUser>> GetAllAnswersAsync()
         {
+            answers = await context.UserAnswers
+               .Include(q => q.Question)
+               .ToListAsync();
 
-            return await context.UserAnswers.ToListAsync();
+            return await context.UserAnswers.
+                Include(q => q.Question).ToListAsync();
         }
         public async Task<AnswerUser?> GetUserAnswersByIdAsync(int id)
         {
