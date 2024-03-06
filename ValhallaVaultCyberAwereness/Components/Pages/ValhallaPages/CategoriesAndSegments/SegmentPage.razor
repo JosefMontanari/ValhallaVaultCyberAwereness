@@ -24,10 +24,10 @@
                     <div>
 						<p><strong>@question.Title</strong></p> <!--Detta blir SUBKATEGORI, GÖR KNAPP-->
                         <p>Innehåll: @question.Explanation</p>
-                        <button class="btn btn-outline-warning" @onclick="() => GoToQuestionPage(question.QuestionId)">Gå till frågesidan</button>
+                        @* <button class="btn btn-outline-warning" @onclick="() => GoToQuestionPage(question.QuestionId)">Gå till frågesidan</button> *@
+                        <a href="/questionpage/@question.QuestionId">Till frågorna</a>
                     </div>
                 }
-     
                 </div>
             }
     </div>
@@ -67,20 +67,20 @@ else
         questions = await questionRepo.GetAllQuestionAsync();
     }
 
-    private void GoToQuestionPage(int questionId)
-    {
-        if(navigationManager != null)
-        {
-            Console.WriteLine("hehe");
-            navigationManager.NavigateTo($"/questionpage/{questionId}");
+    // private void GoToQuestionPage(int questionId)
+    // {
+    //     if(navigationManager != null)
+    //     {
+    //         Console.WriteLine("hehe");
+    //         navigationManager.NavigateTo($"/questionpage/{questionId}");
 
 
-        }
-        else
-        {
-            Console.WriteLine("Något fel..");
-        }
-    }
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Något fel..");
+    //     }
+    // }
 
  
 

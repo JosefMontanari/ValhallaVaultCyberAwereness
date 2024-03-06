@@ -1,13 +1,37 @@
 ﻿@page "/questionpage/{questionId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+@inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
+
+
 <h3>QuestionsPage</h3>
 
-@* Tillfällig sida, bara länkar hit för "frågesida" *@
 
+@* Tillfällig sida, bara länkar hit för "frågesida" *@
+@if(questions != null)
+{
 <h1>Question ID: @questionId</h1>
+<h1>Frågan är: @questions.Title</h1>
 
 <h1> hahaaha loololo roflmao</h1>
+	
+}
+
+
+
 @code {
 	[Parameter]
 	public int questionId { get; set; }
+
+	[Inject]
+	private QuestionRepo questionRepos { get; set; }
+
+	private Question questions;
+
+	protected override async Task OnInitializedAsync()
+	{
+		questions = await questionRepos.GetQuestionByIdAsync(questionId);
+	}
 
 }
