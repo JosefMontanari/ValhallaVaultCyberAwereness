@@ -23,8 +23,34 @@ namespace ValhallaVaultCyberAwereness.Service
         {
             return await context.Segments.FirstOrDefaultAsync(s => s.SegmentId == id);
         }
+        public async Task AddSegmentAsync(Segment segmentToAdd)
+        {
+            await context.Segments.AddAsync(segmentToAdd);
+            await context.SaveChangesAsync();
+        }
+        public async Task UpdateSegmentAsync(Segment updatedSegment)
+        {
+            Segment? SegmentUpdate = await GetSegmentByIdAsync(updatedSegment.SegmentId);
 
-			}
-		}
-	}
+            if (SegmentUpdate != null)
+            {
+
+                SegmentUpdate.SegmentTitle = updatedSegment.SegmentTitle;
+
+                await context.SaveChangesAsync();
+            }
+        }
+        public async Task DeleteSegment(Segment segmentToDelete)
+        {
+            try
+            {
+                context.Segments.Remove(segmentToDelete);
+                await context.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
+        }
+    }
 }
