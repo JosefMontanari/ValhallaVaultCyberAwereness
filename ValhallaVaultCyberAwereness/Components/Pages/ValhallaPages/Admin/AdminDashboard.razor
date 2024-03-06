@@ -1,46 +1,282 @@
-﻿@* @page "/Admin"
+﻿@page "/Admin"
 @using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @rendermode InteractiveServer
 @attribute [Authorize(Roles = "Admin")]
-@inject QuestionRepo questionRepo
+@inject CategoryRepo categoryRepo
+@inject SegmentRepo segmentRepo
+@inject QuestionRepo questionsRepo
+@inject NavigationManager navigationManager
 
-<h3>AdminDashboard</h3>
+<h3>
+	Admin Dashboard <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
+		<path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4M3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.39.39 0 0 0-.029-.518z" />
+		<path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A8 8 0 0 1 0 10m8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3" />
+	</svg>
+</h3>
 
-<h1>All Categories:</h1>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Category Name</th>
-			<th>Subcategories</th>
-		</tr>
-	</thead>
+<br />
 
-	<tbody>
-		@foreach(var category in questionRepo.Categories)
-		{
+<button class="btn btn-primary" @onclick="ToggleCategories">@CatBtnText</button>
+<button class="btn btn-primary">Add Category</button>
+
+<br />
+<br />
+<br />
+
+@if(ShowCategories == true)
+{
+	<div class="Categories">
+
+		<h4>All Categories:</h4>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Category Name</th>
+					<th>Segments</th>
+					<th>Edit</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				@foreach (var category in categoryRepo.categories)
+				{
+					<tr>
+						<td class="fw-bold">@category.Categories</td>
+						<td>
+							<ol>
+								@foreach (var segment in category.Segments)
+								{
+									<li>
+										@segment.SegmentTitle
+									</li>
+								}
+							</ol>
+						</td>
+						<td>
+							<button class="btn btn-primary" @onclick="() => EditCategory(category.CategoryId)">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+									<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+								</svg>
+							</button>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+	</div>
+}
+
+
+
+<button class="btn btn-primary" @onclick="ToggleSegments">@SegBtnText</button>
+<br />
+<br />
+<br />
+
+@if(ShowSegments == true)
+{
+<div class="Segments">
+@if(Segments != null)
+{
+	<h4>All Segments:</h4>
+	<table class="table">
+		<thead>
 			<tr>
-				<td>@category.Name</td>
-				<td>
-					<ol>
-					@foreach(var segment in category.Segments)
-					{
-						<li>
-							@segment.Name
-						</li>
-					}
-				</ol>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
+				<th>Segment name</th>
+				<th>Segment Category</th>
+				<th>Questions</th>
+				<th>Edit</th>
 
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (var segment in Segments)
+			{
+				<tr>
+					<td class="fw-bold">@segment.SegmentTitle</td>
+					<td>@segment.Category.Categories</td>
+					<td>
+						<ol>
+							@foreach (var question in segment.Question)
+							{
+								<li>
+									@question.Title
+								</li>
+							}
+						</ol>
+					</td>
+					<td>
+						<button class="btn btn-primary" @onclick="() => EditSegment(segment.SegmentId)">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+								<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+							</svg>
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+}
+</div>
+}
+
+
+
+<button class="btn btn-primary" @onclick="ToggleQuestions">@QueBtnText</button>
+<br />
+<br />
+<br />
+	@if(ShowQuestions == true)
+	{
+	<div class="Questions">
+		
+	@if (Questions != null)
+{
+	<h4>All Questions:</h4>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Question Title</th>
+				<th>Question</th>
+				<th>Possible answers</th>
+				<th>Correct answer</th>
+				<th>Edit</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (var question in Questions)
+			{
+				<tr>
+					<td class="fw-bold">@question.Title</td>
+						@if(question.PossibleAnswers != null)
+					{
+						<td>@question.Questions</td>
+								<td>
+									<ol>
+									@foreach (var answer in question.PossibleAnswers)
+									{
+									<li>
+										@answer
+									</li>
+									}
+									</ol>
+								</td>
+								<td>
+									@question.CorrectAnswer
+								</td>
+					}
+					else
+					{
+						<td>No Question given yet</td>
+						<td>
+							No Answers given yet
+						</td>
+						<td>
+							No answers given yet
+						</td>
+					}
+
+					<td>
+						<button class="btn btn-primary" @onclick="() => EditQuestion(question.QuestionId)">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+								<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+							</svg>
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+}
+	</div>
+	}
 
 @code {
+	public List<Question> Questions	{ get; set; }
+	public List<Segment> Segments { get; set; }
+	private bool ShowCategories { get; set; } = false;
+	private bool ShowSegments { get; set; } = false;
+	private bool ShowQuestions { get; set; } = false;
+	private string CatBtnText { get; set; } = "Show categories";
+	private string SegBtnText { get; set; } = "Show segments";
+	private string QueBtnText { get; set; } = "Show questions";
+
+
 	protected override async Task OnInitializedAsync()
 	{
-		await questionRepo.GetAllCategoriesAsync();
+		await categoryRepo.GetAllCategoriesAsync();
+
+		Segments = await segmentRepo.GetAllSegmentAsync();
+		Questions = await questionsRepo.GetAllQuestionAsync();
 
 	}
-} *@
+
+	public void ToggleCategories()
+	{
+		if(ShowCategories == false)
+		{
+			ShowCategories = true;
+			CatBtnText = "Hide categories";
+
+		}
+		else if(ShowCategories == true)
+		{
+			ShowCategories = false;
+			CatBtnText = "Show categories";
+		}
+	}
+	public void ToggleSegments()
+	{
+		if (ShowSegments == false)
+		{
+			ShowSegments = true;
+			SegBtnText = "Hide segments";
+
+		}
+		else if (ShowSegments == true)
+		{
+			ShowSegments = false;
+			SegBtnText = "Show segments";
+
+		}
+	}
+	public void ToggleQuestions()
+	{
+		if (ShowQuestions == false)
+		{
+			ShowQuestions = true;
+			QueBtnText = "Hide questions";
+
+		}
+		else if (ShowQuestions == true)
+		{
+			ShowQuestions = false;
+			QueBtnText = "Show questions";
+
+		}
+	}
+
+	public async Task EditCategory(int id)
+	{
+		string type = "Category";
+		navigationManager.NavigateTo($"/edit/{type}/{id}");
+	}
+
+	public async Task EditSegment(int id)
+	{
+		string type = "Segment";
+		navigationManager.NavigateTo($"/edit/{type}/{id}");
+	}
+	public async Task EditQuestion(int id)
+	{
+		string type = "Question";
+		navigationManager.NavigateTo($"/edit/{type}/{id}");
+	}
+}

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ValhallaVaultCyberAwereness.Data;
 using ValhallaVaultCyberAwereness.Data.Models;
+using ValhallaVaultCyberAwereness.Service;
 
 namespace ValhallaVaultCyberAwereness.Controllers
 {
@@ -9,17 +8,18 @@ namespace ValhallaVaultCyberAwereness.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
 
-        public QuestionController(ApplicationDbContext context)
+        public readonly QuestionRepo _questionRepo;
+
+        public QuestionController(QuestionRepo qService)
         {
-            _context = context;
+            _questionRepo = qService;
         }
 
         [HttpGet]
         public async Task<List<Question>> GetAllQuestions()
         {
-            return await _context.Questions.ToListAsync();
+            return await _questionRepo.GetAllQuestionAsync();
         }
     }
 }

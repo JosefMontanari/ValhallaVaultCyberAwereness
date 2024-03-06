@@ -18,6 +18,8 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 // För att komma åt Cate.repo 
 builder.Services.AddScoped<CategoryRepo>();
+builder.Services.AddScoped<SegmentRepo>();
+builder.Services.AddScoped<QuestionRepo>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -111,6 +113,12 @@ using (ServiceProvider sp = builder.Services.BuildServiceProvider())
 //för api
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {

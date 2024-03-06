@@ -3,54 +3,82 @@
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 
+
 @attribute [Authorize]
 
-<h3>CategoryPage</h3>
+<h3>Kategorier </h3>
 
+<br />
+<br />
 
-
-@*  Gör en dropdown för Cateogires: *@
- @if (categories != null && categories.Any())
+@if (categories != null && categories.Any())
 {
-    <label>Select a Category:</label> 
-    <select @onchange="OnCategorySelected"> 
-        <option value="">- Select Category -</option>
-     @*    Gå igenom alla catees *@
-        @foreach (var category in categories)
-        {
-            <option value="@category.Categories">@category.Categories</option>
-        }
-    </select>
+    @foreach (var category in categories)
+    {
+        <div>
+            <h4>
+                <a href="/segmentpage/@category.CategoryId" class="btn btn-primary">@category.Categories</a>
+            </h4> <!-- Display alla Katerogier -->
+            <p>@InformationAboutACategory(category.CategoryId)</p> <!--Displaya lite information om dom.-->
+            <p>I denna kategori ingår följande segment: @category.Categories</p>
+            <ul>
+                @foreach (var segment in category.Segments)
+                {
+                    <li>
+                        @segment.SegmentTitle
+                         - Antal rätt svar: @segment.CalculateCorrectAnswers(userAnswers).ToString("F2")% 
+        
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+}
 
-}
-else
-{
-    <p>No categories found.</p>
-}
 
 
 @code {
     private List<Category> categories;
     [Inject]
     private CategoryRepo categoryRepo { get; set; }
-
+    private Question questions;
     private string selectedCategory;
+
+    private List<AnswerUser> userAnswers;
 
 
     protected override async Task OnInitializedAsync()
     {
-        // Hämta alla categoeies.
         categories = await categoryRepo.GetAllCategoriesAsync();
+      
 
     }
 
-    private void OnCategorySelected(ChangeEventArgs args)
+    private async Task OnCategorySelected(ChangeEventArgs args)
     {
         selectedCategory = args.Value.ToString();
-     
- 
-        StateHasChanged(); // Re-rendar sidan/komponenten om något har ändrats.
+
+        await InvokeAsync(StateHasChanged);
+    
     }
 
 
+
+    private string InformationAboutACategory(int categoryId)
+    {
+        switch (categoryId)
+        {
+            case 1:
+                return "Denna kategoeri handlar om sätt att kunna skydda sig emot bedrägerier och lite utbildning.";
+            case 2:
+                return "Í denna kategoeri handlar det om för företag hur man kan bygga säker cyberinfrastruktur.";
+            case 3:
+                return "Cyberangreppen blir allt fler och en allt större post som behöver läggas undan för företagen.";
+            default:
+                return "Ingen info.";
+        }
+    }
+
 }
+
+

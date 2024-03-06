@@ -1,4 +1,4 @@
-﻿@page "/subsegmentpage"
+﻿@page "/subsegmentpage/{questionId}"
 @using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
@@ -16,7 +16,11 @@
 
 
  <a>Gå till frågesida </a>
+<h1>Question ID: @questionId</h1>
+
+<h1> hahaaha loololo roflmao</h1>
 
 @code {
-
+	[Parameter]
+	public int questionId { get; set; }
 }
