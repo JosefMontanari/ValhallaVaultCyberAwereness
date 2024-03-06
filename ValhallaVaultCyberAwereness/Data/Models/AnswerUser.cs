@@ -11,5 +11,8 @@ namespace ValhallaVaultCyberAwereness.Data.Models
         public Question? Question { get; set; }
         public bool IsAnswerCorrect { get; set; }
 
+        // Behöver spara en users svar i denna klass
+        public string? UserAnswer { get; set; }
+
     }
 }
