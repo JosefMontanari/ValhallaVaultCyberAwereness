@@ -1,0 +1,55 @@
+﻿@page "/edit/{type}/{id:int}"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+@rendermode InteractiveServer
+@inject CategoryRepo categoryRepo
+@inject SegmentRepo segmentRepo
+@inject QuestionRepo questionRepo
+@attribute [Authorize(Roles= "Admin")]
+<h3>Edit</h3>
+
+@if(CategoryToEdit != null)
+{
+	<h1>@CategoryToEdit.Categories</h1>
+}
+else if(SegmentToEdit != null)
+{
+	<h1>@SegmentToEdit.SegmentTitle</h1>
+}
+else if(QuestionToEdit != null)
+{
+	<h1>@QuestionToEdit.Questions</h1>
+}
+else
+{
+	<span>Loading...</span>
+}
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	[Parameter]
+	public string? Type { get; set; }
+
+	public Category? CategoryToEdit { get; set; }
+	public Segment? SegmentToEdit { get; set; }
+	public Question? QuestionToEdit { get; set; }
+
+	protected async override Task OnParametersSetAsync()
+	{
+		if(Type == "Category")
+		{
+
+			CategoryToEdit = await categoryRepo.GetCategoryByIdAsync(Id);
+		}
+		else if(Type == "Segment")
+		{
+			SegmentToEdit = await segmentRepo.GetSegmentByIdAsync(Id);
+		}
+		else if(Type == "Question")
+		{
+			QuestionToEdit = await questionRepo.GetQuestionByIdAsync(Id);
+		}
+	}
+}
