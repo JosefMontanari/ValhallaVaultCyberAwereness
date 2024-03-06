@@ -10,8 +10,6 @@ namespace ValhallaVaultCyberAwereness.Service
 
 		private readonly ApplicationDbContext context;
 
-		private readonly ApplicationDbContext _context;
-
 
 
 		public List<Category> categories { get; set; } = new List<Category>();
