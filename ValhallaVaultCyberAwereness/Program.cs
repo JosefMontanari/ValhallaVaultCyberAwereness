@@ -113,6 +113,12 @@ using (ServiceProvider sp = builder.Services.BuildServiceProvider())
 //för api
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {

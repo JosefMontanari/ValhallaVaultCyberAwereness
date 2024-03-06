@@ -6,17 +6,23 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class SegmentRepo(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext context;
+
+        public List<Segment> segments { get; set; } = new List<Segment>();
 
         public async Task<List<Segment>> GetAllSegmentAsync()
         {
-            return await context.Segments.ToListAsync();
+            segments = await context.Segments
+                .Include(q => q.Question)
+                .ToListAsync();
+
+            return await context.Segments
+                .Include(q => q.Question)
+                .ToListAsync();
         }
         public async Task<Segment?> GetSegmentByIdAsync(int id)
         {
             return await context.Segments.FirstOrDefaultAsync(s => s.SegmentId == id);
         }
-
         public async Task AddSegmentAsync(Segment segmentToAdd)
         {
             await context.Segments.AddAsync(segmentToAdd);
@@ -25,13 +31,16 @@ namespace ValhallaVaultCyberAwereness.Service
         public async Task UpdateSegmentAsync(Segment updatedSegment)
         {
             Segment? SegmentUpdate = await GetSegmentByIdAsync(updatedSegment.SegmentId);
+
             if (SegmentUpdate != null)
             {
+
                 SegmentUpdate.SegmentTitle = updatedSegment.SegmentTitle;
+
                 await context.SaveChangesAsync();
             }
         }
-        public async Task DeleteSegmentAsync(Segment segmentToDelete)
+        public async Task DeleteSegment(Segment segmentToDelete)
         {
             try
             {

@@ -6,11 +6,18 @@ namespace ValhallaVaultCyberAwereness.Service
 {
     public class QuestionRepo(ApplicationDbContext context)
     {
-
+        public List<Question> questions { get; set; } = new List<Question>();
 
         public async Task<List<Question>> GetAllQuestionAsync()
         {
-            return await context.Questions.ToListAsync();
+            questions = await context.Questions
+                .Include(x => x.Segment)
+                .ThenInclude(c => c.Category)
+                .ToListAsync();
+
+            return await context.Questions.
+                Include(x => x.Segment).
+                ThenInclude(c => c.Category).ToListAsync();
         }
 
         public async Task<Question?> GetQuestionByIdAsync(int id)
