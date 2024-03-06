@@ -98,7 +98,7 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+            RedirectManager.RedirectTo("/Home"); /* innan var /Home ReturnUrl */
         }
         else if (result.RequiresTwoFactor)
         {
