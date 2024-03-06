@@ -19,6 +19,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 // För att komma åt Cate.repo 
 builder.Services.AddScoped<CategoryRepo>();
 builder.Services.AddScoped<SegmentRepo>();
+builder.Services.AddScoped<QuestionRepo>();
 
 builder.Services.AddAuthentication(options =>
     {
