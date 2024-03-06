@@ -18,6 +18,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 // För att komma åt Cate.repo 
 builder.Services.AddScoped<CategoryRepo>();
+builder.Services.AddScoped<SegmentRepo>();
 
 builder.Services.AddAuthentication(options =>
     {

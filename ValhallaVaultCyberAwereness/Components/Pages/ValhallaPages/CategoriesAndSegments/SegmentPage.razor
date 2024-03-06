@@ -2,14 +2,49 @@
 @using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
+@inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
 
 @attribute [Authorize]
 
 <h3>SegmentPage</h3>
 
-<p>Beskriv några segment bara...</p>
+@if (segments.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Del : </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var segment in segments)
+            {
+                <div>
+
+                    <p>@segment.SegmentTitle</p>
+                 
+                </div>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No segments found.</p>
+}
+
 
 
 @code {
+    private List<Segment> segments = new List<Segment>();
+    [Inject]
+    private SegmentRepo segmentRepo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        segments = await segmentRepo.GetAllSegmentAsync();
+    }
+
 
 }
