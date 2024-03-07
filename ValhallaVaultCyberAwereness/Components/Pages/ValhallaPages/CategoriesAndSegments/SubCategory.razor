@@ -17,10 +17,10 @@
         @foreach (var question in questions.Where(q => q.SegmentId == subCategoryId))
                 {
                           <br />
-                        <p><strong>@question.Title</strong></p> 
+                        <p><strong>Subkategori @question.Title</strong></p> 
                       
                 }
-            <a href="/questionpage/@categoryId/@subCategoryId">  <button>Testa frågorna för del @subCategoryId</button> </a>
+            <a href="/questionpage/@categoryId/@subCategoryId">  <button class="btn btn-outline-primary">Testa frågorna för del @subCategoryId</button> </a>
         </div>
     </div>
 

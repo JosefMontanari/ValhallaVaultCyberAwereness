@@ -1,8 +1,9 @@
 ﻿@page "/categorypage"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @attribute [Authorize]
 
@@ -17,7 +18,7 @@
     {
         <div>
             <h4>
-                <a href="/segmentpage/@category.CategoryId" class="btn btn-primary">@category.Categories</a>
+                <a href="/segmentpage/@category.CategoryId" class="btn btn-outline-primary"> @category.Categories</a>
             </h4> <!-- Display alla Katerogier -->
             <p>@InformationAboutACategory(category.CategoryId)</p> <!--Displaya lite information om dom.-->
             <p>I denna kategori ingår följande segment: @category.Categories</p>
@@ -46,13 +47,23 @@
 
     private List<AnswerUser> userAnswers;
 
+    private AnswerRepo answerRepo;
+    private string userId;
+
 
     protected override async Task OnInitializedAsync()
     {
         categories = await categoryRepo.GetAllCategoriesAsync();
-      
+
+       // userAnswers = await answerRepo.GetAllAnswersAsync(); Får null, behöver hita UserId: (finns ej), måste läggas till i AnswerUser. UserId är string/Guid
 
     }
+
+    // private async Task<List<AnswerUser>> GetTheUsersAnswers()
+    // {
+     
+    // }
+
 
     private async Task OnCategorySelected(ChangeEventArgs args)
     {
