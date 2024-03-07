@@ -6,24 +6,94 @@
 @inject CategoryRepo categoryRepo
 @inject SegmentRepo segmentRepo
 @inject QuestionRepo questionRepo
+@inject NavigationManager navigationManager
 @attribute [Authorize(Roles= "Admin")]
 <h3>Edit</h3>
 
 @if(CategoryToEdit != null)
 {
-	<h1>@CategoryToEdit.Categories</h1>
+	<EditForm Model="CategoryToEdit" OnValidSubmit="HandleSubmit" OnInvalidSubmit="InvalidSubmit">
+		<div>
+			<label>Category name:</label>
+			<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
+		</div>
+		<br />
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" @onclick="DeleteCategory">Delete Category</button>
+	</EditForm>
 }
 else if(SegmentToEdit != null)
 {
-	<h1>@SegmentToEdit.SegmentTitle</h1>
+	<EditForm Model="SegmentToEdit" OnValidSubmit="HandleSubmit" OnInvalidSubmit="InvalidSubmit">
+		<div>
+			<label>Segment name:</label>
+			<InputText id="SegmentName" @bind-Value="SegmentToEdit.SegmentTitle" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Choose category:</label>
+			<InputSelect @bind-Value="SegmentToEdit.CategoryId" class="form-select">
+				<option value="null">Choose a category</option>
+				@foreach (var category in categoryRepo.categories)
+				{
+					<option value="@category.CategoryId">@category.Categories</option>
+				}
+			</InputSelect>
+		</div>
+		<br />
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" @onclick="DeleteSegment">Delete Segment</button>
+
+	</EditForm>
 }
 else if(QuestionToEdit != null)
 {
-	<h1>@QuestionToEdit.Questions</h1>
+	<EditForm Model="QuestionToEdit" OnValidSubmit="HandleSubmit" OnInvalidSubmit="InvalidSubmit">
+		<div>
+			<label>Question title:</label>
+			<InputText id="QuestionTitle" @bind-Value="QuestionToEdit.Title" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Question:</label>
+			<InputText id="Question" @bind-Value="QuestionToEdit.Questions" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Possible answers:</label>
+			<InputText id="QuestionAnswerOne" @bind-Value="QuestionToEdit.PossibleAnswers[0]" class="form-control"></InputText>
+			<InputText id="QuestionAnswerTwo" @bind-Value="QuestionToEdit.PossibleAnswers[1]" class="form-control"></InputText>
+			<InputText id="QuestionAnswerThree" @bind-Value="QuestionToEdit.PossibleAnswers[2]" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Correct answer (Has to be identical with one of the answers):</label>
+			<InputText id="QuestionAnswer" @bind-Value="QuestionToEdit.CorrectAnswer" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Choose segment:</label>
+			<InputSelect @bind-Value="QuestionToEdit.SegmentId" class="form-select">
+				@foreach (var segment in segmentRepo.segments)
+				{
+					<option value="@segment.SegmentId">@segment.SegmentId (@segment.Category.Categories)</option>
+				}
+			</InputSelect>
+		</div>
+
+		<br />
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" @onclick="DeleteQuestion">Delete Segment</button>
+	</EditForm>
 }
 else
 {
 	<span>Loading...</span>
+}
+
+@if (SubmitIsInvalid)
+{
+	<span class="alert-warning">Please fill in all fields correctly.</span>
 }
 
 @code {
@@ -31,10 +101,10 @@ else
 	public int Id { get; set; }
 	[Parameter]
 	public string? Type { get; set; }
-
 	public Category? CategoryToEdit { get; set; }
 	public Segment? SegmentToEdit { get; set; }
 	public Question? QuestionToEdit { get; set; }
+	private bool SubmitIsInvalid { get; set; }
 
 	protected async override Task OnParametersSetAsync()
 	{
@@ -51,5 +121,41 @@ else
 		{
 			QuestionToEdit = await questionRepo.GetQuestionByIdAsync(Id);
 		}
+	}
+
+	private async void HandleSubmit()
+	{
+		if(CategoryToEdit != null)
+		{
+				await categoryRepo.UpdateCategoryAsync(CategoryToEdit);
+				navigationManager.NavigateTo("/admin");
+
+		}
+		else if(SegmentToEdit != null)
+		{
+			await segmentRepo.UpdateSegmentAsync(SegmentToEdit);
+			navigationManager.NavigateTo("/admin");
+		}
+		else if (QuestionToEdit != null)
+		{
+			await questionRepo.UpdateQuestionAsync(QuestionToEdit);
+			navigationManager.NavigateTo("/admin");
+		}
+	}
+	private async void DeleteCategory()
+	{
+		await categoryRepo.DeleteCategoryAsync(CategoryToEdit);
+	}
+	private async void DeleteSegment()
+	{
+		await segmentRepo.DeleteSegment(SegmentToEdit);
+	}
+	private async void DeleteQuestion()
+	{
+		await questionRepo.DeleteQuestionAsync(QuestionToEdit);
+	}
+	private void InvalidSubmit()
+	{
+		SubmitIsInvalid = true;
 	}
 }

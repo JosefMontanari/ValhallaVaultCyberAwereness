@@ -19,7 +19,7 @@
 <br />
 
 <button class="btn btn-primary" @onclick="ToggleCategories">@CatBtnText</button>
-<button class="btn btn-primary">Add Category</button>
+
 
 <br />
 <br />
@@ -65,7 +65,9 @@
 				}
 			</tbody>
 		</table>
-
+		<button class="btn btn-primary" @onclick="AddCategory">Add Category</button>
+		<br />
+		<hr />
 	</div>
 }
 
@@ -98,8 +100,17 @@
 			{
 				<tr>
 					<td class="fw-bold">@segment.SegmentTitle</td>
-					<td>@segment.Category.Categories</td>
-					<td>
+							@if(segment.CategoryId != null)
+							{
+								
+								<td>@segment.Category.Categories</td>
+							}
+							else
+							{
+								<td>This segment has no Category at the moment</td>
+
+							}
+							<td>
 						<ol>
 							@foreach (var question in segment.Question)
 							{
@@ -278,5 +289,10 @@
 	{
 		string type = "Question";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
+	}
+	public async Task AddCategory()
+	{
+		string type = "Category";
+		navigationManager.NavigateTo($"/add/{type}");
 	}
 }
