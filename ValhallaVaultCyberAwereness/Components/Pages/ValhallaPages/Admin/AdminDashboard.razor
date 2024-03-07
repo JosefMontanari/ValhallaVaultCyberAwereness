@@ -167,29 +167,67 @@
 					<td class="fw-bold">@question.Title</td>
 						@if(question.PossibleAnswers != null)
 					{
-						<td>@question.Questions</td>
+								@if (!string.IsNullOrWhiteSpace(question.Questions))
+								{
+									<td>@question.Questions</td>
+
+								}
+								else
+								{
+									<td>Not specified</td>
+								}
 								<td>
 									<ol>
 									@foreach (var answer in question.PossibleAnswers)
 									{
-									<li>
-										@answer
-									</li>
-									}
+											if (!string.IsNullOrWhiteSpace(answer))
+											{
+												<li>
+													@answer
+												</li>
+											}
+											else
+											{
+												<li>
+													Not specified
+												</li>
+											}
+										}
 									</ol>
 								</td>
-								<td>
-									@question.CorrectAnswer
-								</td>
+								
+									@if (!string.IsNullOrWhiteSpace(question.CorrectAnswer))
+									{
+									<td>
+										@question.CorrectAnswer
+									</td>
+
+									}
+									else
+									{
+									<td>
+										Not specified
+									</td>
+									}
 					}
 					else
 					{
-						<td>No Question given yet</td>
+						<td>Not specified</td>
 						<td>
-							No Answers given yet
+							<ol>
+								<li>
+									Not specified
+								</li>
+								<li>
+									Not specified
+								</li>
+								<li>
+									Not specified
+								</li>
+							</ol>
 						</td>
 						<td>
-							No answers given yet
+							Not specified
 						</td>
 					}
 
