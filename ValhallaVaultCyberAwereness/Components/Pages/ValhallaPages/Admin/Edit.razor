@@ -6,12 +6,13 @@
 @inject CategoryRepo categoryRepo
 @inject SegmentRepo segmentRepo
 @inject QuestionRepo questionRepo
+@inject NavigationManager navigationManager
 @attribute [Authorize(Roles= "Admin")]
 <h3>Edit</h3>
 
 @if(CategoryToEdit != null)
 {
-	<EditForm Model="CategoryToEdit" OnSubmit="HandleSubmit">
+	<EditForm Model="CategoryToEdit" OnValidSubmit="HandleSubmit" OnInvalidSubmit="InvalidSubmit">
 		<div>
 			<label>Category name:</label>
 			<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
@@ -23,7 +24,7 @@
 }
 else if(SegmentToEdit != null)
 {
-	<EditForm Model="SegmentToEdit" OnSubmit="HandleSubmit">
+	<EditForm Model="SegmentToEdit" OnValidSubmit="HandleSubmit" OnInvalidSubmit="InvalidSubmit">
 		<div>
 			<label>Segment name:</label>
 			<InputText id="SegmentName" @bind-Value="SegmentToEdit.SegmentTitle" class="form-control"></InputText>
@@ -32,6 +33,7 @@ else if(SegmentToEdit != null)
 		<div>
 			<label>Choose category:</label>
 			<InputSelect @bind-Value="SegmentToEdit.CategoryId" class="form-select">
+				<option value="null">Choose a category</option>
 				@foreach (var category in categoryRepo.categories)
 				{
 					<option value="@category.CategoryId">@category.Categories</option>
@@ -46,7 +48,7 @@ else if(SegmentToEdit != null)
 }
 else if(QuestionToEdit != null)
 {
-	<EditForm Model="QuestionToEdit" OnSubmit="HandleSubmit">
+	<EditForm Model="QuestionToEdit" OnValidSubmit="HandleSubmit" OnInvalidSubmit="InvalidSubmit">
 		<div>
 			<label>Question title:</label>
 			<InputText id="QuestionTitle" @bind-Value="QuestionToEdit.Title" class="form-control"></InputText>
@@ -89,6 +91,11 @@ else
 	<span>Loading...</span>
 }
 
+@if (SubmitIsInvalid)
+{
+	<span class="alert-warning">Please fill in all fields correctly.</span>
+}
+
 @code {
 	[Parameter]
 	public int Id { get; set; }
@@ -97,6 +104,7 @@ else
 	public Category? CategoryToEdit { get; set; }
 	public Segment? SegmentToEdit { get; set; }
 	public Question? QuestionToEdit { get; set; }
+	private bool SubmitIsInvalid { get; set; }
 
 	protected async override Task OnParametersSetAsync()
 	{
@@ -119,16 +127,19 @@ else
 	{
 		if(CategoryToEdit != null)
 		{
-			await categoryRepo.UpdateCategoryAsync(CategoryToEdit);
+				await categoryRepo.UpdateCategoryAsync(CategoryToEdit);
+				navigationManager.NavigateTo("/admin");
 
 		}
 		else if(SegmentToEdit != null)
 		{
 			await segmentRepo.UpdateSegmentAsync(SegmentToEdit);
+			navigationManager.NavigateTo("/admin");
 		}
 		else if (QuestionToEdit != null)
 		{
 			await questionRepo.UpdateQuestionAsync(QuestionToEdit);
+			navigationManager.NavigateTo("/admin");
 		}
 	}
 	private async void DeleteCategory()
@@ -142,5 +153,9 @@ else
 	private async void DeleteQuestion()
 	{
 		await questionRepo.DeleteQuestionAsync(QuestionToEdit);
+	}
+	private void InvalidSubmit()
+	{
+		SubmitIsInvalid = true;
 	}
 }
