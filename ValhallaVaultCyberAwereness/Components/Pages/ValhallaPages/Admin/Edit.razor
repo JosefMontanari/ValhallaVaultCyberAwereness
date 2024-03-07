@@ -12,19 +12,77 @@
 @if(CategoryToEdit != null)
 {
 	<EditForm Model="CategoryToEdit" OnSubmit="HandleSubmit">
-		<label>Category name:</label>
-		<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
+		<div>
+			<label>Category name:</label>
+			<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
+		</div>
+		<br />
 		<button type="submit" class="btn btn-primary">Submit</button>
 		<button type="button" class="btn btn-primary" @onclick="DeleteCategory">Delete Category</button>
 	</EditForm>
 }
 else if(SegmentToEdit != null)
 {
-	<h1>@SegmentToEdit.SegmentTitle</h1>
+	<EditForm Model="SegmentToEdit" OnSubmit="HandleSubmit">
+		<div>
+			<label>Segment name:</label>
+			<InputText id="SegmentName" @bind-Value="SegmentToEdit.SegmentTitle" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Choose category:</label>
+			<InputSelect @bind-Value="SegmentToEdit.CategoryId" class="form-select">
+				@foreach (var category in categoryRepo.categories)
+				{
+					<option value="@category.CategoryId">@category.Categories</option>
+				}
+			</InputSelect>
+		</div>
+		<br />
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" @onclick="DeleteSegment">Delete Segment</button>
+
+	</EditForm>
 }
 else if(QuestionToEdit != null)
 {
-	<h1>@QuestionToEdit.Questions</h1>
+	<EditForm Model="QuestionToEdit" OnSubmit="HandleSubmit">
+		<div>
+			<label>Question title:</label>
+			<InputText id="QuestionTitle" @bind-Value="QuestionToEdit.Title" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Question:</label>
+			<InputText id="Question" @bind-Value="QuestionToEdit.Questions" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Possible answers:</label>
+			<InputText id="QuestionAnswerOne" @bind-Value="QuestionToEdit.PossibleAnswers[0]" class="form-control"></InputText>
+			<InputText id="QuestionAnswerTwo" @bind-Value="QuestionToEdit.PossibleAnswers[1]" class="form-control"></InputText>
+			<InputText id="QuestionAnswerThree" @bind-Value="QuestionToEdit.PossibleAnswers[2]" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Correct answer (Has to be identical with one of the answers):</label>
+			<InputText id="QuestionAnswer" @bind-Value="QuestionToEdit.CorrectAnswer" class="form-control"></InputText>
+		</div>
+
+		<div>
+			<label>Choose segment:</label>
+			<InputSelect @bind-Value="QuestionToEdit.SegmentId" class="form-select">
+				@foreach (var segment in segmentRepo.segments)
+				{
+					<option value="@segment.SegmentId">@segment.SegmentId (@segment.Category.Categories)</option>
+				}
+			</InputSelect>
+		</div>
+
+		<br />
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" @onclick="DeleteQuestion">Delete Segment</button>
+	</EditForm>
 }
 else
 {
@@ -64,9 +122,25 @@ else
 			await categoryRepo.UpdateCategoryAsync(CategoryToEdit);
 
 		}
+		else if(SegmentToEdit != null)
+		{
+			await segmentRepo.UpdateSegmentAsync(SegmentToEdit);
+		}
+		else if (QuestionToEdit != null)
+		{
+			await questionRepo.UpdateQuestionAsync(QuestionToEdit);
+		}
 	}
 	private async void DeleteCategory()
 	{
 		await categoryRepo.DeleteCategoryAsync(CategoryToEdit);
+	}
+	private async void DeleteSegment()
+	{
+		await segmentRepo.DeleteSegment(SegmentToEdit);
+	}
+	private async void DeleteQuestion()
+	{
+		await questionRepo.DeleteQuestionAsync(QuestionToEdit);
 	}
 }
