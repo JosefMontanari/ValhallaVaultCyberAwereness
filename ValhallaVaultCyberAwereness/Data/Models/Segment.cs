@@ -6,6 +6,10 @@ public class Segment
 {
 	[Key]
 	public int SegmentId { get; set; }
+
+
+	[Required(ErrorMessage = "Segment name is required")]
+	[MinLength(4, ErrorMessage = "Segment name must be at least 4 characters long")]
 	public string SegmentTitle { get; set; }
 
 	public Category? Category { get; set; } // Har en category
