@@ -11,7 +11,12 @@
 
 @if(CategoryToEdit != null)
 {
-	<h1>@CategoryToEdit.Categories</h1>
+	<EditForm Model="CategoryToEdit" OnSubmit="HandleSubmit">
+		<label>Category name:</label>
+		<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="button" class="btn btn-primary" @onclick="DeleteCategory">Delete Category</button>
+	</EditForm>
 }
 else if(SegmentToEdit != null)
 {
@@ -31,7 +36,6 @@ else
 	public int Id { get; set; }
 	[Parameter]
 	public string? Type { get; set; }
-
 	public Category? CategoryToEdit { get; set; }
 	public Segment? SegmentToEdit { get; set; }
 	public Question? QuestionToEdit { get; set; }
@@ -51,5 +55,18 @@ else
 		{
 			QuestionToEdit = await questionRepo.GetQuestionByIdAsync(Id);
 		}
+	}
+
+	private async void HandleSubmit()
+	{
+		if(CategoryToEdit != null)
+		{
+			await categoryRepo.UpdateCategoryAsync(CategoryToEdit);
+
+		}
+	}
+	private async void DeleteCategory()
+	{
+		await categoryRepo.DeleteCategoryAsync(CategoryToEdit);
 	}
 }
