@@ -1,4 +1,6 @@
 ﻿@page "/questionpage/{questionId:int}"
+@page "/questionpage/{categoryId:int}/{subCategoryId:int}"
+
 @using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
@@ -6,32 +8,115 @@
 
 
 <h3>QuestionsPage</h3>
+<p>kategori id @categoryId</p>
+<p> del @subCategoryId</p>
 
 
 @* Tillfällig sida, bara länkar hit för "frågesida" *@
-@if(questions != null)
+@if(question != null)
 {
 <h1>Question ID: @questionId</h1>
-<h1>Frågan är: @questions.Title</h1>
+	<h1>Question Title: @question.Title</h1>
+<h1>Frågan är: @question.Explanation</h1>
 
-<h1> hahaaha loololo roflmao</h1>
 	
 }
 
 
+	@foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
+	{
+		<div class="container " style="border:dotted; box-sizing:border-box">
+			<div>
+				<h3><b>@q.Title </b></h3>
+				<b> @q.Explanation</b>
+			</div>
+
+			<div>
+				@if(q.PossibleAnswers != null)
+				{
+				@foreach (string qz in q.PossibleAnswers)
+				{
+					<label>
+						<input type="radio" name="userAnswer" value="@qz"/>
+						@qz
+					</label>
+					<br />
+				}
+			}
+			else
+			{
+<label>No answers added</label>
+			}
+				
+				
+			</div>
+			<div class="d-flex align-items-center">
+				<div>
+					<button style="text-align:center;">Kontrollera svar</button>
+				</div>
+				<div>
+					<button style="text-align:right;">Nästa</button>
+				</div>
+			</div>
+		</div>
+		<br />
+
+	}
 
 @code {
+	[Parameter]
+	public int categoryId { get; set; }
+
+	[Parameter]
+	public int subCategoryId { get; set; }
+
 	[Parameter]
 	public int questionId { get; set; }
 
 	[Inject]
 	private QuestionRepo questionRepos { get; set; }
 
-	private Question questions;
+	private Question question;
+
+	
+
+
+
+	private List<Segment> segments = new List<Segment>();
+	private List<Question> questions = new List<Question>();
+	[Inject]
+	private SegmentRepo segmentRepo { get; set; }
+	[Inject]
+	private CategoryRepo categoryRepo { get; set; }
+	[Inject]
+	private QuestionRepo questionRepo { get; set; }
+	[Inject]
+	private NavigationManager navigationManager { get; set; }
+
+
+
+
+	private Category selectedCategory;
+
+
 
 	protected override async Task OnInitializedAsync()
 	{
-		questions = await questionRepos.GetQuestionByIdAsync(questionId);
+	
+		if (questionId != 0)
+		{
+			question = await questionRepos.GetQuestionByIdAsync(questionId);
+		}
+		else
+		{
+			segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
+			// displaya vald category
+			selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
+			// Displaya questions will varje segment
+			questions = await questionRepo.GetAllQuestionAsync();
+		}
+
 	}
+
 
 }

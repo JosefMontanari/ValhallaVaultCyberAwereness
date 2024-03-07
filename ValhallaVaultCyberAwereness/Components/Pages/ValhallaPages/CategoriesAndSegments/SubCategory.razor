@@ -1,31 +1,34 @@
-﻿@page "/segmentpage/{categoryId:int}"
+﻿@page "/subcategory/{categoryId:int}/{subCategoryId:int}"
 @using Microsoft.AspNetCore.Authorization
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
 
-@attribute [Authorize]
 
-<h3>Segment</h3>
+<h3>Del @subCategoryId</h3>
 
 @if (segments.Any())
 {
     <div>
-        <h4>I detta segment handlar det om @selectedCategory.Categories</h4>
-            @foreach (var segment in segments)
-            {
-                <div>
-                <a href="/subcategory/@categoryId/@segment.SegmentId"><h3><strong>@segment.SegmentTitle</strong></h3> </a>
-                </div>
-            }
+      
+      
+                <!--Displaya alla questions will varje fråga-->
+        <div>
+        @foreach (var question in questions.Where(q => q.SegmentId == subCategoryId))
+                {
+                          <br />
+                        <p><strong>@question.Title</strong></p> 
+                      
+                }
+            <a href="/questionpage/@categoryId/@subCategoryId">  <button>Testa frågorna för del @subCategoryId</button> </a>
+        </div>
     </div>
-    
+
 }
 else
 {
     <p>Hmm.. error 404.</p>
 }
-
 
 
 @code {
@@ -40,8 +43,12 @@ else
     [Inject]
     private NavigationManager navigationManager { get; set; }
 
+
     [Parameter]
     public int categoryId { get; set; }
+
+    [Parameter]
+    public int subCategoryId { get; set; }
 
 
     private Category selectedCategory;
@@ -55,21 +62,5 @@ else
         questions = await questionRepo.GetAllQuestionAsync();
     }
 
-    // private void GoToQuestionPage(int questionId)
-    // {
-    //     if(navigationManager != null)
-    //     {
-    //         Console.WriteLine("hehe");
-    //         navigationManager.NavigateTo($"/questionpage/{questionId}");
-
-
-    //     }
-    //     else
-    //     {
-    //         Console.WriteLine("Något fel..");
-    //     }
-    // }
-
- 
 
 }
