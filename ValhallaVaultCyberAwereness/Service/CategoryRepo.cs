@@ -37,7 +37,7 @@ namespace ValhallaVaultCyberAwereness.Service
         {
             Category? categoryToUpdate = await GetCategoryByIdAsync(updatedCategory.CategoryId);
 
-            if (categoryToUpdate == null)
+            if (categoryToUpdate != null)
             {
                 categoryToUpdate.Categories = updatedCategory.Categories;
 
