@@ -100,8 +100,17 @@
 			{
 				<tr>
 					<td class="fw-bold">@segment.SegmentTitle</td>
-					<td>@segment.Category.Categories</td>
-					<td>
+							@if(segment.CategoryId != null)
+							{
+								
+								<td>@segment.Category.Categories</td>
+							}
+							else
+							{
+								<td>This segment has no Category at the moment</td>
+
+							}
+							<td>
 						<ol>
 							@foreach (var question in segment.Question)
 							{
