@@ -2,5 +2,124 @@
 
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject QuestionRepo questionRepo
+@inject SegmentRepo segmentRepo
+@inject CategoryRepo categoryRepo 
+@inject NavigationManager NavigationManager
+
 <PageTitle>Home</PageTitle>
 
+<div class="container">
+    <h1 class="mt-5">Step into the Cyber Sentinel Training Hub at Valhalla Vault for your Cybersecurity Education Journey</h1>
+
+    <div class="container py-4">
+        <header class="pb-1 border-bottom">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <img src="Images/logga.png" style="height: 50px; width: 50px;">
+                </div>
+                <div class="col">
+                    <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
+            <video autoplay muted loop style="position: fixed; object-fit: cover; z-index: -1; top: 0; left: 0; width: 100%; height: 100%;">
+                <source src="/Videos/circuit.mp4" type="video/mp4">
+            </video>
+            <div class="container-fluid py-5 d-flex justify-content-center align-items-center">
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="row mt-3">
+        <div class="col">
+            <div class="search-input">
+                <input list="items" type="text" class="form-control" placeholder="Search..." @bind="Search" style="height: 40px; background-color: beige; color: blue; border: none;" />
+            </div>
+            <div class="search-button mt-3">
+                <button class="btn btn-primary" @onclick="SearchItems">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="float-right mt-3">
+        <ul class="list-group" style="margin: 0; padding: 0;">
+            @foreach (var item in Items)
+            {
+                <li class="list-group-item" style="background-color: transparent; border: none;">
+                    <button class="btn btn-link" @onclick="() => NavigateTo(item)" style="color: beige; padding: 10px; font-size: 18px;">@item</button>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <datalist id="items">
+        @foreach (var item in ChosenItems)
+        {
+            <option value="@item"></option>
+        }
+    </datalist>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger mt-3">@ErrorMessage</div>
+    }
+</div>
+
+@code {
+    private string? Search { get; set; }
+    private string? ErrorMessage { get; set; }
+    private List<string> Items { get; set; } = new List<string> { "Att skydda sig mot bedrägeri", "Cybersäkerhet för företag", "Cyberspionage" };
+
+    private List<string> ChosenItems
+    {
+        get
+        {
+            try
+            {
+                return string.IsNullOrWhiteSpace(Search) ? Items : Items.Where(item => item.Contains(Search)).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while filtering items: {ex.Message}");
+                return new List<string>();
+            }
+        }
+    }
+
+    private void SearchItems()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(Search))
+            {
+                if (Items.Contains(Search, StringComparer.OrdinalIgnoreCase))
+                {
+                    NavigateTo(Search);
+                }
+                else
+                {
+                    throw new Exception("No matching category found.");
+                }
+            }
+            else
+            {
+                throw new Exception("Search field is empty.");
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private void NavigateTo(string item)
+    {
+        NavigationManager.NavigateTo($"/categorypage?category={item}");
+    }
+}
