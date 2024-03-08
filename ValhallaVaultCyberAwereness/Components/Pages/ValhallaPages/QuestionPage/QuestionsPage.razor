@@ -1,6 +1,6 @@
 ﻿@page "/questionpage/{questionId:int}"
 @page "/questionpage/{categoryId:int}/{subCategoryId:int}"
-
+@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using ValhallaVaultCyberAwereness.Data
@@ -13,6 +13,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
 <h3>QuestionsPage</h3>
@@ -23,54 +24,7 @@
 <h1>Question ID: @questionId</h1>
 	<h1>Question Title: @question.Title</h1>
 <h1>Frågan är: @question.Explanation</h1>
-
-	
 }
-
-<!--Tims modell-->
-@* 	@foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
-	{
-		<div class="container " style="border:dotted; box-sizing:border-box">
-			<div>
-				<h3><b>@q.Title </b></h3>
-				<b> @q.Explanation</b>
-			</div>
-
-			<div>
-				@if(q.PossibleAnswers != null)
-				{
-				@foreach (string qz in q.PossibleAnswers)
-				{
-					<label>
-						<input type="radio" name="userAnswer" value="@qz"  />
-						@qz
-					</label>
-					
-		
-				}
-			}
-			else
-			{
-<label>No answers added</label>
-			}
-				
-			</div>
-				<!-- Här ska den vara om den inte funkar-->
-			<div class="d-flex align-items-center">
-				<div>
-				<button style="text-align:center;" >Kontrollera svar</button>
-				</div>
-				<div>
-					<button style="text-align:right;" >Nästa</button>
-				</div>
-			</div>
-		</div>
-		<br />
-
-	} *@
-
-	<!--Test modell-->
-<p role="status">Current count: @currentCount</p>
 
 
 @foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
@@ -81,37 +35,39 @@
 			<b> @q.Explanation</b>
 		</div>
 
-		 <form @onsubmit="() => SaveUserAnswerAsync(q, selectedAnswer)">
-		<div>
-			@if (q.PossibleAnswers != null)
-			{
-				@foreach (string qz in q.PossibleAnswers)
+		<form @onsubmit="() => SaveUserAnswerAsync(q, selectedAnswer)">
+			<div>
+				@if (q.PossibleAnswers != null)
 				{
-					<label>
-							<input type="radio" name="userAnswer" value="@qz" @onclick="() => SelectAnswer(qz)" /> 
+					@foreach (string qz in q.PossibleAnswers)
+					{
+						<label>
+							<input type="radio" name="userAnswer" value="@qz" @onclick="() => SelectAnswer(qz)" checked="@IsAnswerSelected(qz)" />
 							@qz
-					</label>
-					<br />
+						</label>
+						<br />
+					}
+					<div class="d-flex align-items-center">
+						<div>
+							<br />
+							<button class="btn btn-outline-primary" style="text-align:center;" type="submit">Kontrollera svar</button>
+							<br />
+						</div>
+						<div>
+							<br />
+							<button class="btn btn-outline-primary" style="text-align:right;">Nästa</button>
+							<br />
+						</div>
+					</div>
 				}
-				<div class="d-flex align-items-center">
-					<div>
-							<button style="text-align:center;" type="submit">Kontrollera svar</button> 
-					</div>
-					<div>
-						<button style="text-align:right;" @onclick="IncrementCount">Nästa</button>
-					</div>
-				</div> <!-- ändra till en submitform eller edit. Testa fram-->
-			}
-			else
-			{
-				<label>No answers added</label>
-			}
-		</div>
+				else
+				{
+					<label>No answers added</label>
+				}
+			</div>
 		</form>
 	</div>
 	<br />
-	                        
-
 }
 
 
@@ -131,12 +87,11 @@
 
 	private Question question;
 
-	//F 
 	[Inject]
 	private AnswerRepo answerRepo { get; set; }
 
-
 	private List<Segment> segments = new List<Segment>();
+	
 	private List<Question> questions = new List<Question>();
 	[Inject]
 	private SegmentRepo segmentRepo { get; set; }
@@ -147,20 +102,29 @@
 	[Inject]
 	private NavigationManager navigationManager { get; set; }
 
-
-
-
 	private Category selectedCategory;
 
+ 	private string selectedAnswer;
 
+
+	 // Metod som kollar om ett svars alternativ är valt eller ej
+	private bool IsAnswerSelected(string answer)
+	{
+		return answer == selectedAnswer;
+	}
+
+	// Sparar en selectad answer i Localstorage för att senare senare hämtningar i sidan - blazor ticket
+	private void SelectAnswer(string answer)
+	{
+		selectedAnswer = answer;
+		LocalStorage.SetItemAsync("selectedAnswer", selectedAnswer);
+	}
 
 	protected override async Task OnInitializedAsync()
 	{
-
 		if (questionId != 0)
 		{
 			question = await questionRepos.GetQuestionByIdAsync(questionId);
-
 		}
 		else
 		{
@@ -169,23 +133,21 @@
 			selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
 			// Displaya questions will varje segment
 			questions = await questionRepo.GetAllQuestionAsync();
-
 		}
-
 	}
 
-	// Test:
-	private string selectedAnswer;
-
-	// Hämta en selected user och store:a i selectedAnswer, kunde ej spara tidigare vald answer.
-	private void SelectAnswer(string answer)
+	// För at komma åt Localstorage och åter-rendera sidan
+	protected override async Task OnAfterRenderAsync(bool afterFirstRender)
 	{
-		selectedAnswer = answer;
+		if (afterFirstRender)
+		{
+			selectedAnswer = await LocalStorage.GetItemAsync<string>("selectedAnswer");
+			StateHasChanged();
+		}
 	}
 
 	private async Task SaveUserAnswerAsync(Question question, string userAnswer)
 	{
-		
 		// Använda AuthenticationState för att kolla av user authenticated user, vem den inloggade usern är: userId osv.
 		var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
@@ -223,21 +185,14 @@
 				existingAnswer.IsAnswerCorrect = isAnswerCorrect;
 				await answerRepo.UpdateUserAnswersAsync(existingAnswer);
 			}
-
+		
 			await InvokeAsync(() => StateHasChanged());
 		}
 		else
 		{
 			Console.WriteLine("User not found");
 		}
+
+		
 	}
-
-	 private int currentCount = 0;
-
-	private void IncrementCount()
-	{
-		currentCount++;
-	}
-
-
 }

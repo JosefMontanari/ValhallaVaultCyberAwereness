@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,9 @@ builder.Services.AddScoped<CategoryRepo>();
 builder.Services.AddScoped<SegmentRepo>();
 builder.Services.AddScoped<QuestionRepo>();
 builder.Services.AddScoped<AnswerRepo>();
+
+// Spara usern med blazor storage
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddAuthentication(options =>
 	{
