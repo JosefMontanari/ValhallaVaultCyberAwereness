@@ -2,9 +2,17 @@
 @page "/questionpage/{categoryId:int}/{subCategoryId:int}"
 
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwereness.Data
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
+@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
+<!-- Fredrik testar: -->
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 <h3>QuestionsPage</h3>
@@ -22,8 +30,8 @@
 	
 }
 
-
-	@foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
+<!--Tims modell-->
+@* 	@foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
 	{
 		<div class="container " style="border:dotted; box-sizing:border-box">
 			<div>
@@ -37,10 +45,11 @@
 				@foreach (string qz in q.PossibleAnswers)
 				{
 					<label>
-						<input type="radio" name="userAnswer" value="@qz"/>
+						<input type="radio" name="userAnswer" value="@qz"  />
 						@qz
 					</label>
-					<br />
+					
+		
 				}
 			}
 			else
@@ -48,20 +57,66 @@
 <label>No answers added</label>
 			}
 				
-				
 			</div>
+				<!-- Här ska den vara om den inte funkar-->
 			<div class="d-flex align-items-center">
 				<div>
-					<button style="text-align:center;">Kontrollera svar</button>
+				<button style="text-align:center;" >Kontrollera svar</button>
 				</div>
 				<div>
-					<button style="text-align:right;">Nästa</button>
+					<button style="text-align:right;" >Nästa</button>
 				</div>
 			</div>
 		</div>
 		<br />
 
-	}
+	} *@
+
+	<!--Test modell-->
+<p role="status">Current count: @currentCount</p>
+
+
+@foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
+{
+	<div class="container " style="border:dotted; box-sizing:border-box">
+		<div>
+			<h3><b>@q.Title </b></h3>
+			<b> @q.Explanation</b>
+		</div>
+
+		 <form @onsubmit="() => SaveUserAnswerAsync(q, selectedAnswer)">
+		<div>
+			@if (q.PossibleAnswers != null)
+			{
+				@foreach (string qz in q.PossibleAnswers)
+				{
+					<label>
+							<input type="radio" name="userAnswer" value="@qz" @onclick="() => SelectAnswer(qz)" /> 
+							@qz
+					</label>
+					<br />
+				}
+				<div class="d-flex align-items-center">
+					<div>
+							<button style="text-align:center;" type="submit">Kontrollera svar</button> 
+					</div>
+					<div>
+						<button style="text-align:right;" @onclick="IncrementCount">Nästa</button>
+					</div>
+				</div> <!-- ändra till en submitform eller edit. Testa fram-->
+			}
+			else
+			{
+				<label>No answers added</label>
+			}
+		</div>
+		</form>
+	</div>
+	<br />
+
+}
+
+
 
 @code {
 	[Parameter]
@@ -78,8 +133,9 @@
 
 	private Question question;
 
-	
-
+	//F 
+	[Inject]
+	private AnswerRepo answerRepo { get; set; }
 
 
 	private List<Segment> segments = new List<Segment>();
@@ -102,10 +158,11 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-	
+
 		if (questionId != 0)
 		{
 			question = await questionRepos.GetQuestionByIdAsync(questionId);
+
 		}
 		else
 		{
@@ -114,8 +171,61 @@
 			selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
 			// Displaya questions will varje segment
 			questions = await questionRepo.GetAllQuestionAsync();
+
 		}
 
+	}
+
+	// Test:
+	private string selectedAnswer;
+
+	// Hämta en selected user och store:a i selectedAnswer, kunde ej spara tidigare vald answer.
+	private void SelectAnswer(string answer)
+	{
+		selectedAnswer = answer;
+	}
+
+	private async Task SaveUserAnswerAsync(Question question, string userAnswer)
+	{
+		
+		// Använda AuthenticationState för att kolla av user authenticated user, vem den inloggade usern är: userId osv.
+		var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+		// den inloggade usern från Authenticate blir en variabel och userns data: som roles, username sparas i LoggedInUser
+		var loggedInUser = authenticCheck.User;
+
+		// ändrar den "inloggade" usern till en ApplicationUser ( under Application DbContext ) 
+		var user = await UserManager.GetUserAsync(loggedInUser);
+
+		if (user != null)
+		{
+			// saknade tidigare boolen i table
+			bool isAnswerCorrect = string.Equals(selectedAnswer, question.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
+
+			var answerUser = new AnswerUser
+				{
+					User = user,
+					QuestionId = question.QuestionId,
+					Question = question,
+					UserAnswer = selectedAnswer,
+					IsAnswerCorrect = isAnswerCorrect,
+				};
+
+			await answerRepo.AddUserAnswersAsync(answerUser);
+			await InvokeAsync(() => StateHasChanged());
+		}
+		else
+		{
+			Console.WriteLine("User not found");
+		}
+	
+	}
+
+	 private int currentCount = 0;
+
+	private void IncrementCount()
+	{
+		currentCount++;
 	}
 
 
