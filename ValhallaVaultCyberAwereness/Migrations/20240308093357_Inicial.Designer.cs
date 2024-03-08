@@ -12,8 +12,8 @@ using ValhallaVaultCyberAwereness.Data;
 namespace ValhallaVaultCyberAwereness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240307123341_deletebehaviourtest")]
-    partial class deletebehaviourtest
+    [Migration("20240308093357_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
