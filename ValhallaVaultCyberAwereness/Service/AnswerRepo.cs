@@ -30,30 +30,29 @@ namespace ValhallaVaultCyberAwereness.Service
 			await context.SaveChangesAsync();
 		}
 
-		public async Task UpdateUserAnswersAsync(Question oldAnswer)
-		{
-			Question? userAnswersToUpdate = await questionRepo.GetQuestionByIdAsync(oldAnswer.QuestionId);
+        public async Task UpdateUserAnswersAsync(AnswerUser oldAnswer)
+        {
+            AnswerUser? userAnswersToUpdate = await GetUserAnswerAsync(oldAnswer.User.Id, oldAnswer.QuestionId);
 
-			if (userAnswersToUpdate != null)
-			{
-				userAnswersToUpdate.CorrectAnswer = oldAnswer.CorrectAnswer;
+            if (userAnswersToUpdate != null)
+            {
+                userAnswersToUpdate.CorrectAnswer = oldAnswer.CorrectAnswer;
 
-				await context.SaveChangesAsync();
-			}
-		}
+                await context.SaveChangesAsync();
+            }
+        }
+        public async Task DeleteUserAnswersAsync(AnswerUser userAnswersToDelete)
+        {
+            try
+            {
+                context.UserAnswers.Remove(userAnswersToDelete);
+                await context.SaveChangesAsync();
+            }
+            catch
+            {
 
-		public async Task DeleteUserAnswersAsync(AnswerUser userAnswersToDelete)
-		{
-			try
-			{
-				context.UserAnswers.Remove(userAnswersToDelete);
-				await context.SaveChangesAsync();
-			}
-			catch
-			{
-
-			}
-		}
+            }
+        }
 
 
 
