@@ -1,0 +1,34 @@
+﻿@page "/add/category"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+@rendermode InteractiveServer
+@inject CategoryRepo categoryRepo
+@inject NavigationManager navigationManager
+@attribute [Authorize(Roles = "Admin")]
+
+<EditForm Model="CategoryToAdd" OnValidSubmit="HandleSubmit">
+	<div>
+		<label>Category name:</label>
+		<DataAnnotationsValidator />
+		<InputText id="CategoryName" @bind-Value="CategoryToAdd.Categories" class="form-control"></InputText>
+		<ValidationSummary></ValidationSummary>
+	</div>
+	<br />
+	<button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+	public Category? CategoryToAdd { get; set; } = new();
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+	}
+
+	private async void HandleSubmit()
+	{
+		await categoryRepo.AddCategoryAsync(CategoryToAdd);
+		navigationManager.NavigateTo("/admin");
+	}
+}

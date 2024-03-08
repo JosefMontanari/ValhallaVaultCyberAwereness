@@ -334,13 +334,11 @@
 	}
 	public async Task AddCategory()
 	{
-		string type = "Category";
-		navigationManager.NavigateTo($"/add/{type}");
+		navigationManager.NavigateTo("/add/category");
 	}
 	public async Task AddSegment()
 	{
-		string type = "Segment";
-		navigationManager.NavigateTo($"/add/{type}");
+		navigationManager.NavigateTo($"/add/segment");
 	}
 	public void AddQuestion()
 	{

@@ -55,14 +55,16 @@
 </EditForm>
 
 @code {
-	public Question? QuestionToAdd { get; set; } = new();
+	public Question? QuestionToAdd { get; set; } = new(){CorrectAnswer = "",PossibleAnswers = new List<string>(){"","",""}, Explanation = "", Segment = null, Title = ""};
 
-	protected override void OnParametersSet()
+	protected override void OnInitialized()
 	{
-		base.OnParametersSet();
+		base.OnInitialized();
 	}
+
 	private async void HandleSubmit()
 	{
-		
+		await questionRepo.AddQuestionAsync(QuestionToAdd);
+		navigationManager.NavigateTo("/admin");
 	}
 }
