@@ -43,6 +43,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 	.AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+// Kommenterau ut 
 using (ServiceProvider sp = builder.Services.BuildServiceProvider())
 {
 	var context = sp.GetRequiredService<ApplicationDbContext>();
