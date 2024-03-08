@@ -4,6 +4,7 @@ using ValhallaVaultCyberAwereness.Data.Models;
 
 namespace ValhallaVaultCyberAwereness.Service
 {
+
     public class QuestionRepo(ApplicationDbContext context)
     {
         public List<Question> questions { get; set; } = new List<Question>();
@@ -58,4 +59,5 @@ namespace ValhallaVaultCyberAwereness.Service
             }
         }
     }
+
 }

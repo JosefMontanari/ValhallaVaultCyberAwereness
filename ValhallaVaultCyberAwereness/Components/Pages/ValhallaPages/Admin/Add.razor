@@ -1,0 +1,41 @@
+﻿@page "/add/{type}"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+@rendermode InteractiveServer
+@inject CategoryRepo categoryRepo
+@inject SegmentRepo segmentRepo
+@inject QuestionRepo questionRepo
+@inject NavigationManager navigationManager
+@attribute [Authorize(Roles = "Admin")]
+
+@if(Type == "Category")
+{
+	<EditForm Model="category">
+	<label for="CategoryName">Category name:</label>
+
+	</EditForm>
+}
+else if(Type == "Segment")
+{
+	
+}
+else if(Type == "Question")
+{
+	
+}
+else
+{
+	<p>Please choose a type before coming here...</p>
+}
+
+@code {
+	[Parameter]
+	public string? Type { get; set; }
+	public Category? category { get; set; } = new Category();
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+	}
+}

@@ -4,6 +4,7 @@ using ValhallaVaultCyberAwereness.Data.Models;
 
 namespace ValhallaVaultCyberAwereness.Service
 {
+
     public class SegmentRepo(ApplicationDbContext context)
     {
 
@@ -62,4 +63,5 @@ namespace ValhallaVaultCyberAwereness.Service
             }
         }
     }
+
 }

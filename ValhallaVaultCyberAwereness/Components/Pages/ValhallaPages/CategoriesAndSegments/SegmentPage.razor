@@ -11,12 +11,16 @@
 @if (segments.Any())
 {
     <div>
-        <h4>I detta segment handlar det om @selectedCategory.Categories</h4>
+        <h4>I detta segment handlar det om @selectedCategory.Categories och dess subkategorier</h4>
+        <br />
             @foreach (var segment in segments)
             {
                 <div>
-                <a href="/subcategory/@categoryId/@segment.SegmentId"><h3><strong>@segment.SegmentTitle</strong></h3> </a>
+                <a href="/subcategory/@categoryId/@segment.SegmentId" class="btn btn-outline-primary">
+                    <h3><strong>@segment.SegmentTitle</strong></h3>
+                </a>
                 </div>
+                    <br />
             }
     </div>
     
