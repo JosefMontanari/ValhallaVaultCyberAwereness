@@ -109,6 +109,7 @@ using (ServiceProvider sp = builder.Services.BuildServiceProvider())
         // Kör metoden Synkront! Viktigt!
         .GetAwaiter().GetResult();
     }
+
 }
 
 //för api

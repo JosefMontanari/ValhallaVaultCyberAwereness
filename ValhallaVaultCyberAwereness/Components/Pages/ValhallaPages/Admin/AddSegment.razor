@@ -1,0 +1,48 @@
+﻿@page "/add/segment"
+@using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+@rendermode InteractiveServer
+@inject SegmentRepo segmentRepo
+@inject CategoryRepo categoryRepo
+@inject NavigationManager navigationManager
+@attribute [Authorize(Roles = "Admin")]
+
+
+<EditForm Model="SegmentToAdd" OnValidSubmit="HandleSubmit">
+	<div>
+		<label>Segment name:</label>
+		<DataAnnotationsValidator />
+		<InputText id="SegmentName" @bind-Value="SegmentToAdd.SegmentTitle" class="form-control"></InputText>
+		<ValidationSummary></ValidationSummary>
+	</div>
+
+	<div>
+		<label>Choose category:</label>
+		<InputSelect @bind-Value="SegmentToAdd.CategoryId" class="form-select">
+			<option value="">None</option>
+			@foreach (var category in categoryRepo.categories)
+			{
+				<option value="@category.CategoryId">@category.Categories</option>
+			}
+		</InputSelect>
+	</div>
+	<br />
+	<button type="submit" class="btn btn-primary">Add new segment</button>
+
+</EditForm>
+
+@code {
+	public Segment? SegmentToAdd { get; set; } = new();
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+	}
+
+	private async void HandleSubmit()
+	{
+		await segmentRepo.AddSegmentAsync(SegmentToAdd);
+		navigationManager.NavigateTo("/admin");
+	}
+}
