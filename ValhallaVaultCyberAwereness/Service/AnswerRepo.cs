@@ -30,29 +30,34 @@ namespace ValhallaVaultCyberAwereness.Service
 			await context.SaveChangesAsync();
 		}
 
-        public async Task UpdateUserAnswersAsync(AnswerUser oldAnswer)
-        {
-            AnswerUser? userAnswersToUpdate = await GetUserAnswerAsync(oldAnswer.User.Id, oldAnswer.QuestionId);
+		public async Task UpdateUserAnswersAsync(AnswerUser oldAnswer)
+		{
+			AnswerUser? userAnswersToUpdate = await GetUserAnswerAsync(oldAnswer.User.Id, oldAnswer.QuestionId);
 
-            if (userAnswersToUpdate != null)
-            {
-                userAnswersToUpdate.CorrectAnswer = oldAnswer.CorrectAnswer;
+			if (userAnswersToUpdate != null)
+			{
+				userAnswersToUpdate.UserAnswer = oldAnswer.UserAnswer;
+				userAnswersToUpdate.IsAnswerCorrect = oldAnswer.IsAnswerCorrect;
 
-                await context.SaveChangesAsync();
-            }
-        }
-        public async Task DeleteUserAnswersAsync(AnswerUser userAnswersToDelete)
-        {
-            try
-            {
-                context.UserAnswers.Remove(userAnswersToDelete);
-                await context.SaveChangesAsync();
-            }
-            catch
-            {
+				await context.SaveChangesAsync();
+			}
+		}
+		public async Task<AnswerUser?> GetUserAnswerAsync(string userId, int questionId)
+		{
+			return await context.UserAnswers.FirstOrDefaultAsync(a => a.User.Id == userId && a.QuestionId == questionId);
+		}
+		public async Task DeleteUserAnswersAsync(AnswerUser userAnswersToDelete)
+		{
+			try
+			{
+				context.UserAnswers.Remove(userAnswersToDelete);
+				await context.SaveChangesAsync();
+			}
+			catch
+			{
 
-            }
-        }
+			}
+		}
 
 
 
