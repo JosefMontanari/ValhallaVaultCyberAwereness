@@ -1,0 +1,56 @@
+﻿@page "/NotFoundStatus-{errorcode:int}"
+@using ValhallaVaultCyberAwereness.Components.Layout
+@inject NavigationManager NavigationManager
+@layout EmptyLayout
+
+@* Tims sida *@
+
+@if(errorcode == 0)
+{
+    NavigationManager.NavigateTo("/Home");
+}
+
+<div class="container py-4">
+
+    <header class="pb-1 border-bottom">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="Images/logga.png" style="height: 50px; width: 50px;">
+            </div>
+            <div class="col">
+                <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
+        <video autoplay muted loop style="position: absolute; object-fit: cover; z-index: -1;">
+            <source src="/Videos/circuit.mp4" type="video/mp4">
+
+        </video>
+        <div class="container-fluid py-5 text-center">
+            <div>
+                <h1 class=" display-6 fw-bold">HTTP error code: @errorcode</h1>
+                <h4> The page doesn't exist </h4> 
+            </div>
+        </div>
+         </div>
+    <div class="text-center mt-5 btn-lg">
+        <a href="/Home">
+            <button class="btn-primary" @onclick=Redirect>Go back</button>
+        </a>
+         </div>
+  
+    <footer class="pt-3 mt-4 text-body-secondary border-top"></footer>
+</div>
+
+@code {
+    [Parameter]
+    public int errorcode { get; set; }
+
+    private void Redirect()
+    {
+    
+        NavigationManager.NavigateTo("/Home");
+    }
+}
