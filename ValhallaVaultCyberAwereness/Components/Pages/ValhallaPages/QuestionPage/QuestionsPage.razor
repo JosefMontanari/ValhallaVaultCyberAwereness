@@ -200,26 +200,39 @@
 
 		if (user != null)
 		{
-			// saknade tidigare boolen i table
-			bool isAnswerCorrect = string.Equals(selectedAnswer, question.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
+			// Se om användaren redanhar svarat en gång
+			var existingAnswer = await answerRepo.GetUserAnswerAsync(user.Id, question.QuestionId);
 
-			var answerUser = new AnswerUser
-				{
-					User = user,
-					QuestionId = question.QuestionId,
-					Question = question,
-					UserAnswer = selectedAnswer,
-					IsAnswerCorrect = isAnswerCorrect,
-				};
+			bool isAnswerCorrect = string.Equals(userAnswer, question.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
 
-			await answerRepo.AddUserAnswersAsync(answerUser);
+			if (existingAnswer == null)
+			{
+				// Om svar ej finns, lägg till
+				var answerUser = new AnswerUser
+					{
+						User = user,
+						QuestionId = question.QuestionId,
+						Question = question,
+						UserAnswer = userAnswer,
+						IsAnswerCorrect = isAnswerCorrect,
+					};
+
+				await answerRepo.AddUserAnswersAsync(answerUser);
+			}
+			else
+			{
+				// Else ändra svar
+				existingAnswer.UserAnswer = userAnswer;
+				existingAnswer.IsAnswerCorrect = isAnswerCorrect;
+				await answerRepo.UpdateUserAnswersAsync(existingAnswer);
+			}
+
 			await InvokeAsync(() => StateHasChanged());
 		}
 		else
 		{
 			Console.WriteLine("User not found");
 		}
-	
 	}
 
 	 private int currentCount = 0;
