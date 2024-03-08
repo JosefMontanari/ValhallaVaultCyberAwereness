@@ -19,9 +19,10 @@ namespace ValhallaVaultCyberAwereness.Service
             return await context.UserAnswers.
                 Include(q => q.Question).ToListAsync();
         }
-        public async Task<AnswerUser?> GetUserAnswersByIdAsync(int id)
+
+        public async Task<List<AnswerUser>>? GetUserAnswersByIdAsync(string userid)
         {
-            return await context.UserAnswers.FirstOrDefaultAsync(u => u.id == id);
+            return await context.UserAnswers.Where(u => u.User.Id == userid).ToListAsync();
         }
 
         public async Task AddUserAnswersAsync(AnswerUser userAnswersToAdd)
@@ -42,12 +43,10 @@ namespace ValhallaVaultCyberAwereness.Service
                 await context.SaveChangesAsync();
             }
         }
-
         public async Task<AnswerUser?> GetUserAnswerAsync(string userId, int questionId)
         {
             return await context.UserAnswers.FirstOrDefaultAsync(a => a.User.Id == userId && a.QuestionId == questionId);
         }
-
         public async Task DeleteUserAnswersAsync(AnswerUser userAnswersToDelete)
         {
             try
@@ -59,7 +58,6 @@ namespace ValhallaVaultCyberAwereness.Service
             {
 
             }
-
         }
 
 
