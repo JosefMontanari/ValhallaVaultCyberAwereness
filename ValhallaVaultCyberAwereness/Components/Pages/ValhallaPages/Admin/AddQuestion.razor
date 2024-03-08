@@ -31,6 +31,7 @@
 	<div>
 		<label>Correct answer (Has to be identical with one of the answers):</label>
 		<InputText id="QuestionAnswer" @bind-Value="QuestionToAdd.CorrectAnswer" class="form-control"></InputText>
+		<p class="alert-warning">@ErrorMessage</p>
 	</div>
 
 	<div>
@@ -56,6 +57,8 @@
 
 @code {
 	public Question? QuestionToAdd { get; set; } = new(){CorrectAnswer = "",PossibleAnswers = new List<string>(){"","",""}, Explanation = "", Segment = null, Title = ""};
+	private bool AnswerIsPossible { get; set; } = false;
+	private string ErrorMessage { get; set; } = "";
 
 	protected override void OnInitialized()
 	{
@@ -64,7 +67,20 @@
 
 	private async void HandleSubmit()
 	{
-		await questionRepo.AddQuestionAsync(QuestionToAdd);
-		navigationManager.NavigateTo("/admin");
+		foreach(var answer in QuestionToAdd.PossibleAnswers)
+		{
+			if(answer == QuestionToAdd.CorrectAnswer)
+			{
+				AnswerIsPossible = true;
+			}
+		}
+		if (AnswerIsPossible)
+		{
+			await questionRepo.AddQuestionAsync(QuestionToAdd);
+			navigationManager.NavigateTo("/admin");
+
+		}
+		ErrorMessage = "Answer has to be identical to one of the possible answers!";
+
 	}
 }
