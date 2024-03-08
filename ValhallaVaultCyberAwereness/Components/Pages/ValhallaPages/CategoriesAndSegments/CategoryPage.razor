@@ -1,15 +1,21 @@
 ﻿@page "/categorypage"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwereness.Data
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
 
 @attribute [Authorize]
 
 <h3>Kategorier </h3>
 
-<br />
 <br />
 
 @if (categories != null && categories.Any())
@@ -17,18 +23,20 @@
     @foreach (var category in categories)
     {
         <div>
+            
             <h4>
                 <a href="/segmentpage/@category.CategoryId" class="btn btn-outline-primary"> @category.Categories</a>
             </h4> <!-- Display alla Katerogier -->
             <p>@InformationAboutACategory(category.CategoryId)</p> <!--Displaya lite information om dom.-->
             <p>I denna kategori ingår följande segment: @category.Categories</p>
             <ul>
-                @foreach (var segment in category.Segments)
+                @foreach (var segment in category.Segments ) 
+          @*       @foreach (var question in questions.Where(q => q.SegmentId == subCategoryId)) *@
                 {
                     <li>
                         @segment.SegmentTitle
-                         - Antal rätt svar: @segment.CalculateCorrectAnswers(userAnswers).ToString("F2")% 
-        
+                        - Antal rätt svar: @segment.CalculateCorrectAnswers(userAnswersbyid, @user).ToString("F2")%
+
                     </li>
                 }
             </ul>
@@ -36,34 +44,55 @@
     }
 }
 
-
-
 @code {
+    string user;
+  
+    [Inject]
+    private QuestionRepo questionRepo { get; set; }
+    private List<Question> questionsget = new List<Question>();
+
     private List<Category> categories;
     [Inject]
     private CategoryRepo categoryRepo { get; set; }
     private Question questions;
     private string selectedCategory;
 
-    private List<AnswerUser> userAnswers;
+    private List<AnswerUser>? userAnswers;
+    private List<AnswerUser>? userAnswersbyid;
 
-    private AnswerRepo answerRepo;
-    private string userId;
+    [Inject]
+    private AnswerRepo answerRepo { get; set; }
 
+    // private string userId;
 
-    protected override async Task OnInitializedAsync()
+    private async Task<string> GetUser()
     {
-        categories = await categoryRepo.GetAllCategoriesAsync();
+        var authenticCheck = await  AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-       // userAnswers = await answerRepo.GetAllAnswersAsync(); Får null, behöver hita UserId: (finns ej), måste läggas till i AnswerUser. UserId är string/Guid
+        // den inloggade usern från Authenticate blir en variabel och userns data: som roles, username sparas i LoggedInUser
+        var loggedInUser = authenticCheck.User;
+
+        // ändrar den "inloggade" usern till en ApplicationUser ( under Application DbContext )
+        var user = await UserManager.GetUserAsync(loggedInUser);
+        return user.Id;
 
     }
+    protected override async Task OnInitializedAsync()
+    {
 
-    // private async Task<List<AnswerUser>> GetTheUsersAnswers()
-    // {
-     
-    // }
+        var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var loggedInUser = authenticCheck.User;
+        var userObject = await UserManager.GetUserAsync(loggedInUser);
+        user = userObject.Id;
 
+        questionsget = await questionRepo.GetAllQuestionAsync(); //till procenten
+        categories = await categoryRepo.GetAllCategoriesAsync();
+        // var user = await UserManager.GetUserAsync(loggedInUser);
+
+        userAnswers = await answerRepo.GetAllAnswersAsync(); // Får null, behöver hita UserId: (finns ej), måste läggas till i AnswerUser. UserId är string/Guid
+        userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(user);
+
+    }
 
     private async Task OnCategorySelected(ChangeEventArgs args)
     {
@@ -72,9 +101,6 @@
         await InvokeAsync(StateHasChanged);
     
     }
-
-
-
     private string InformationAboutACategory(int categoryId)
     {
         switch (categoryId)

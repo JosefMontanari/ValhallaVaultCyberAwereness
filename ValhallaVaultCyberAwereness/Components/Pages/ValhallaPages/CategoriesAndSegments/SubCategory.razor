@@ -4,8 +4,12 @@
 @using ValhallaVaultCyberAwereness.Service
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
 
+ 
 
-<h3>Del @subCategoryId</h3>
+@if(segments.Count() != 0)
+{
+    <h3>@segments.FirstOrDefault(t =>t.SegmentId == subCategoryId).SegmentTitle </h3>
+}
 
 @if (segments.Any())
 {
@@ -32,6 +36,8 @@ else
 
 
 @code {
+    private bool IsLoading { get; set; }
+    bool runload = true;
     private List<Segment> segments = new List<Segment>();
     private List<Question> questions = new List<Question>();
     [Inject]
@@ -56,11 +62,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
+        
+      //  segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
         // displaya vald category
         selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
         // Displaya questions will varje segment
         questions = await questionRepo.GetAllQuestionAsync();
+
     }
-
-
 }
