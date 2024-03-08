@@ -37,6 +37,10 @@ namespace ValhallaVaultCyberAwereness.Service
             if (QuestionUpdate != null)
             {
                 QuestionUpdate.Questions = updatedQuestion.Questions;
+                QuestionUpdate.Title = updatedQuestion.Title;
+                QuestionUpdate.PossibleAnswers = updatedQuestion.PossibleAnswers;
+                QuestionUpdate.CorrectAnswer = updatedQuestion.CorrectAnswer;
+                QuestionUpdate.Segment = updatedQuestion.Segment;
 
                 await context.SaveChangesAsync();
             }

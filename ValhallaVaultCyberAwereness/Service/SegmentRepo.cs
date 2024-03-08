@@ -42,6 +42,8 @@ namespace ValhallaVaultCyberAwereness.Service
             if (SegmentUpdate != null)
             {
 
+                SegmentUpdate.Category = updatedSegment.Category;
+
                 SegmentUpdate.SegmentTitle = updatedSegment.SegmentTitle;
 
                 await context.SaveChangesAsync();
