@@ -66,7 +66,7 @@ else if(QuestionToEdit != null)
 		</div>
 
 		<div>
-			<label>Possible answers:</label>
+			<label>(Optional) Possible answers:</label>
 			<InputText id="QuestionAnswerOne" @bind-Value="QuestionToEdit.PossibleAnswers[0]" class="form-control"></InputText>
 			<InputText id="QuestionAnswerTwo" @bind-Value="QuestionToEdit.PossibleAnswers[1]" class="form-control"></InputText>
 			<InputText id="QuestionAnswerThree" @bind-Value="QuestionToEdit.PossibleAnswers[2]" class="form-control"></InputText>
@@ -80,6 +80,7 @@ else if(QuestionToEdit != null)
 		<div>
 			<label>Choose segment:</label>
 			<InputSelect @bind-Value="QuestionToEdit.SegmentId" class="form-select">
+				<option value="">None</option>
 				@foreach (var segment in segmentRepo.segments)
 				{
 					<option value="@segment.SegmentId">@segment.SegmentTitle

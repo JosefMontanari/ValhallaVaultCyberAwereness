@@ -131,7 +131,9 @@
 			}
 		</tbody>
 	</table>
-
+			<button class="btn btn-primary" @onclick="AddSegment">Add Segment</button>
+			<br />
+			<hr />
 }
 </div>
 }
@@ -242,7 +244,9 @@
 			}
 		</tbody>
 	</table>
-
+			<button class="btn btn-primary" @onclick="AddQuestion">Add Question</button>
+			<br />
+			<hr />
 }
 	</div>
 	}
@@ -332,5 +336,15 @@
 	{
 		string type = "Category";
 		navigationManager.NavigateTo($"/add/{type}");
+	}
+	public async Task AddSegment()
+	{
+		string type = "Segment";
+		navigationManager.NavigateTo($"/add/{type}");
+	}
+	public void AddQuestion()
+	{
+		string type = "Question";
+		navigationManager.NavigateTo($"/add/question");
 	}
 }

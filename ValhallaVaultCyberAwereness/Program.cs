@@ -50,7 +50,7 @@ using (ServiceProvider sp = builder.Services.BuildServiceProvider())
 	var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
 	// Kolla om det finns en databas
-	context.Database.Migrate();
+	//context.Database.Migrate();
 
 	ApplicationUser newAdmin = new()
 	{
