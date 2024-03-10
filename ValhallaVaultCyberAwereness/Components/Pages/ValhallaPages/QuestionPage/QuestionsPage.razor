@@ -17,63 +17,83 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
-<h3>QuestionsPage</h3>
-
-@* Tillfällig sida, bara länkar hit för "frågesida" *@
-@if(question != null)
+<h3>Frågor</h3>
+<br />
+<br />
+@if (questionsForPage != null)
 {
-<h1>Question ID: @questionId</h1>
-	<h1>Question Title: @question.Title</h1>
-<h1>Frågan är: @question.Explanation</h1>
-}
 
-
-@foreach (var q in questions.Where(q => q.SegmentId == subCategoryId))
+@if (CounterIndexQ < questionsForPage.Count)
 {
-	<div class="container " style="border:dotted; box-sizing:border-box">
+	<div class="container mt-5" style="border:dotted; box-sizing:border-box">
 		<div>
-			<h3><b>@q.Title </b></h3>
-			<b> @q.Explanation</b>
+			<h3><b>@questionsForPage[CounterIndexQ].Title </b></h3>
+			<h5> @questionsForPage[CounterIndexQ].Explanation </h5>
 		</div>
 
-		<form @onsubmit="() => SaveUserAnswerAsync(q, selectedAnswer)">
+			<form @onsubmit="() => {SaveUserAnswerAsync(questionsForPage[CounterIndexQ], selectedAnswer);ChangeQuestion();}">
 			<div>
-				@if (q.PossibleAnswers != null)
+				@if (questionsForPage[CounterIndexQ].PossibleAnswers != null)
 				{
-					@foreach (string qz in q.PossibleAnswers)
+					@foreach (string answer in questionsForPage[CounterIndexQ].PossibleAnswers)
 					{
-						<label>
-							<input type="radio" name="userAnswer" value="@qz" @onclick="() => SelectAnswer(qz)" checked="@IsAnswerSelected(qz)" />
-							@qz
+							<label style="background-color:@GetBackGroundColorLabel(answer)">
+				<input type="radio" name="userAnswer" value="@answer" @onclick="() => SelectAnswer(answer)" checked="@IsAnswerSelected(answer)" />
+							@answer
 						</label>
 						<br />
 					}
-					<div class="d-flex align-items-center">
-						<div>
-							<br />
-							<button class="btn btn-outline-primary" style="text-align:center;" type="submit">Kontrollera svar</button>
-							<br />
-						</div>
-						<div>
-							<br />
-							<button class="btn btn-outline-primary" style="text-align:right;">Nästa</button>
-							<br />
-						</div>
-					</div>
 				}
 				else
 				{
 					<label>No answers added</label>
 				}
 			</div>
+				<div class="d-flex align-items-center">
+					@if(CounterIndexQ >0)
+					{
+					<div>
+						<br />
+							<button type="button" class="btn btn-outline-primary" style="text-align:right;" @onclick="() => CounterIndexQ -=1 ">Tillbaka</button>
+						<br />
+					</div>
+					}
+				
+					<div class="ml-5 mr-5">
+						<br />
+						<button class=" btn btn-outline-primary mr-2 ml-2" style="text-align:center;" type="button" @onclick=(checkAnswer)>Kontrollera svar</button>
+						<br />
+					</div>
+			
+					<div>
+						<br />
+						<button type="submit" class="btn btn-outline-primary" style="text-align:right;">Nästa</button>
+						<br />
+					</div>
+				</div>
 		</form>
 	</div>
-	<br />
+		<br />
+
+	}
+	else
+	{
+		<div class="container " style="border:dotted; box-sizing:border-box">
+			<div class="text-center">
+				<h1>Klar med frågorna för detta segment</h1>
+				<br />
+				<button class=" btn btn-outline-primary btn-lg" style="text-align:center;" type="button" @onclick="@Reset">Starta igen?</button>
+				<br />
+			</div>
+			
+		</div>
+		
+	}
 }
 
 
-
 @code {
+	private int CounterIndexQ = 0;
 	[Parameter]
 	public int categoryId { get; set; }
 
@@ -90,6 +110,7 @@
 
 	[Inject]
 	private AnswerRepo answerRepo { get; set; }
+	private List<Question> questionsForPage = new List<Question>();
 
 	private List<Segment> segments = new List<Segment>();
 
@@ -105,8 +126,47 @@
 
 	private Category selectedCategory;
 
-	private string selectedAnswer;
+	private string? selectedAnswer;
+	private bool IsAnswerCorrect;
+	private string UserchossenAnswer = "";
 
+	private void Reset() //Starta om frågorna. counterindex startar om frågorna, men resten av variablerna nedan reseta så så inte "kontrolellera svar" buggade
+	{
+		CounterIndexQ = 0;
+		UserchossenAnswer = "";
+		IsAnswerCorrect = false;
+		selectedAnswer = null;
+	}
+
+	private void ChangeQuestion() //Hålla koll på vilken fråga man är på. 
+	{
+		CounterIndexQ++;
+	}
+
+
+	private void checkAnswer()
+	{
+		IsAnswerCorrect = false;
+		foreach(var answer in questionsForPage)
+		{
+			if (string.Equals(selectedAnswer, answer.CorrectAnswer, StringComparison.OrdinalIgnoreCase))
+			{
+				IsAnswerCorrect = true;
+				break;
+			}
+		}
+		UserchossenAnswer = selectedAnswer;
+	}
+
+	private string GetBackGroundColorLabel(string s) //sätter bakgrundsfärg varje label när användare ska kontrollera. 
+	{
+		if (s == UserchossenAnswer && IsAnswerCorrect == true)
+		{ return "green"; }
+		else if (s == UserchossenAnswer && IsAnswerCorrect == false)
+		{ return "red"; }
+		else{ return "initial"; }
+
+	}
 
 	// Metod som kollar om ett svars alternativ är valt eller ej
 	private bool IsAnswerSelected(string answer)
@@ -115,26 +175,34 @@
 	}
 
 	// Sparar en selectad answer i Localstorage för att senare senare hämtningar i sidan - blazor ticket
-	private void SelectAnswer(string answer)
+	private bool SelectAnswer(string answer)
 	{
 		selectedAnswer = answer;
 		LocalStorage.SetItemAsync("selectedAnswer", selectedAnswer);
+		return true;
+
 	}
 
 	protected override async Task OnInitializedAsync()
 	{
+	
 		if (questionId != 0)
 		{
 			question = await questionRepos.GetQuestionByIdAsync(questionId);
+
+
 		}
 		else
 		{
-			
+
 			segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
 			// displaya vald category
 			selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
 			// Displaya questions will varje segment
 			questions = await questionRepo.GetAllQuestionAsync();
+			questionsForPage = await questionRepo.GetSegmentQuestionAsync(subCategoryId);
+
+
 		}
 	}
 
