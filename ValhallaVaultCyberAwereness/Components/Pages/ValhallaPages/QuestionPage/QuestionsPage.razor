@@ -7,6 +7,7 @@
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @using Microsoft.AspNetCore.Components.Authorization
+@using static System.Net.WebRequestMethods
 @rendermode InteractiveServer
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
 <!-- Fredrik testar: -->
@@ -91,7 +92,7 @@
 	private AnswerRepo answerRepo { get; set; }
 
 	private List<Segment> segments = new List<Segment>();
-	
+
 	private List<Question> questions = new List<Question>();
 	[Inject]
 	private SegmentRepo segmentRepo { get; set; }
@@ -104,10 +105,10 @@
 
 	private Category selectedCategory;
 
- 	private string selectedAnswer;
+	private string selectedAnswer;
 
 
-	 // Metod som kollar om ett svars alternativ är valt eller ej
+	// Metod som kollar om ett svars alternativ är valt eller ej
 	private bool IsAnswerSelected(string answer)
 	{
 		return answer == selectedAnswer;
@@ -128,6 +129,7 @@
 		}
 		else
 		{
+			
 			segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
 			// displaya vald category
 			selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);

@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwereness.Components;
 using ValhallaVaultCyberAwereness.Components.Account;
 using ValhallaVaultCyberAwereness.Data;
+using ValhallaVaultCyberAwereness.FredriksMiddlewareHandler;
 using ValhallaVaultCyberAwereness.Service;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,7 @@ builder.Services.AddScoped<CategoryRepo>();
 builder.Services.AddScoped<SegmentRepo>();
 builder.Services.AddScoped<QuestionRepo>();
 builder.Services.AddScoped<AnswerRepo>();
+
 
 // Spara usern med blazor storage
 builder.Services.AddBlazoredLocalStorage();
@@ -152,6 +155,10 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// MW-F ---- Aktivera logger
+app.UseMiddleware<MWFServices>();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -175,6 +182,7 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
 
 //för api
 app.MapControllers();
