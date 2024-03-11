@@ -12,92 +12,115 @@
 
 @if(CategoryToEdit != null)
 {
-	<EditForm Model="CategoryToEdit" OnValidSubmit="HandleSubmit">
-		<div>
-			<label>Category name:</label>
-			<DataAnnotationsValidator/>
-			<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
-			<ValidationSummary></ValidationSummary>
-		</div>
-		<br />
-		<button type="submit" class="btn btn-primary">Submit</button>
-		<button type="button" class="btn btn-primary" @onclick="DeleteCategory">Delete Category</button>
-	</EditForm>
+	<div class="row">
+		<EditForm Model="CategoryToEdit" OnValidSubmit="HandleSubmit">
+			<div class="col-lg-6">
+				<label>Category name:</label>
+				<DataAnnotationsValidator />
+				<InputText id="CategoryName" @bind-Value="CategoryToEdit.Categories" class="form-control"></InputText>
+				<ValidationSummary></ValidationSummary>
+			</div>
+			<br />
+			<button type="submit" class="btn btn-outline-dark" style="color:antiquewhite">Submit</button>
+			<button type="button" class="btn btn-outline-dark" style="color:antiquewhite" @onclick="DeleteCategory">Delete Category</button>
+		</EditForm>
+
+	</div>
+
 }
 else if(SegmentToEdit != null)
 {
-	<EditForm Model="SegmentToEdit" OnValidSubmit="HandleSubmit">
-		<div>
-			<label>Segment name:</label>
-			<DataAnnotationsValidator />
-			<InputText id="SegmentName" @bind-Value="SegmentToEdit.SegmentTitle" class="form-control"></InputText>
-			<ValidationSummary></ValidationSummary>
-		</div>
+	<div class="row">
+		<EditForm Model="SegmentToEdit" OnValidSubmit="HandleSubmit">
+			<div class="col-lg-8">
+				<label>Segment name:</label>
+				<DataAnnotationsValidator />
+				<InputText id="SegmentName" @bind-Value="SegmentToEdit.SegmentTitle" class="form-control"></InputText>
+				<ValidationSummary></ValidationSummary>
+				<br />
+			</div>
 
-		<div>
-			<label>Choose category:</label>
-			<InputSelect @bind-Value="SegmentToEdit.CategoryId" class="form-select">
-				<option value="">None</option>
-				@foreach (var category in categoryRepo.categories)
-				{
-					<option value="@category.CategoryId">@category.Categories</option>
-				}
-			</InputSelect>
-		</div>
-		<br />
-		<button type="submit" class="btn btn-primary">Submit</button>
-		<button type="button" class="btn btn-primary" @onclick="DeleteSegment">Delete Segment</button>
+			<div class="col-lg-8">
+				<label>Choose category:</label>
+				<InputSelect @bind-Value="SegmentToEdit.CategoryId" class="form-select">
+					<option value="">None</option>
+					@foreach (var category in categoryRepo.categories)
+					{
+						<option value="@category.CategoryId">@category.Categories</option>
+					}
+				</InputSelect>
+			</div>
+			<br />
+			<button type="submit" class="btn btn-outline-dark" style="color:antiquewhite">Submit</button>
+			<button type="button" class="btn btn-outline-dark" style="color:antiquewhite" @onclick="DeleteSegment">Delete Segment</button>
 
-	</EditForm>
+		</EditForm>
+	</div>
+
 }
 else if(QuestionToEdit != null)
 {
-	<EditForm Model="QuestionToEdit" OnValidSubmit="HandleSubmit">
-		<div>
-			<label>Question title:</label>
-			<DataAnnotationsValidator />
-			<InputText id="QuestionTitle" @bind-Value="QuestionToEdit.Title" class="form-control"></InputText>
-			<ValidationSummary></ValidationSummary>
-		</div>
+	<div class="row">
 
-		<div>
-			<label>Question:</label>
-			<InputText id="Question" @bind-Value="QuestionToEdit.Questions" class="form-control"></InputText>
-		</div>
+		<EditForm Model="QuestionToEdit" OnValidSubmit="HandleSubmit">
+			<div class="col-lg-8">
+				<label>Question title:</label>
+				<DataAnnotationsValidator />
+				<InputText id="QuestionTitle" @bind-Value="QuestionToEdit.Title" class="form-control"></InputText>
+				<ValidationSummary></ValidationSummary>
+				<br />
+			</div>
 
-		<div>
-			<label>(Optional) Possible answers:</label>
-			<InputText id="QuestionAnswerOne" @bind-Value="QuestionToEdit.PossibleAnswers[0]" class="form-control"></InputText>
-			<InputText id="QuestionAnswerTwo" @bind-Value="QuestionToEdit.PossibleAnswers[1]" class="form-control"></InputText>
-			<InputText id="QuestionAnswerThree" @bind-Value="QuestionToEdit.PossibleAnswers[2]" class="form-control"></InputText>
-		</div>
+			<div class="col-lg-8">
+				<label>Question:</label>
+				<InputTextArea id="Question" @bind-Value="QuestionToEdit.Questions" class="form-control"></InputTextArea>
+				<br />
+			</div>
 
-		<div>
-			<label>Correct answer (Has to be identical with one of the answers):</label>
-			<InputText id="QuestionAnswer" @bind-Value="QuestionToEdit.CorrectAnswer" class="form-control"></InputText>
-			<p class="alert-warning">@ErrorMessage</p>
-		</div>
+			<div class="col-lg-8">
+				<label>(Optional) Possible answers:</label>
+				<InputText id="QuestionAnswerOne" @bind-Value="QuestionToEdit.PossibleAnswers[0]" class="form-control"></InputText>
+				<InputText id="QuestionAnswerTwo" @bind-Value="QuestionToEdit.PossibleAnswers[1]" class="form-control"></InputText>
+				<InputText id="QuestionAnswerThree" @bind-Value="QuestionToEdit.PossibleAnswers[2]" class="form-control"></InputText>
+				<br />
+			</div>
 
-		<div>
-			<label>Choose segment:</label>
-			<InputSelect @bind-Value="QuestionToEdit.SegmentId" class="form-select">
-				<option value="">None</option>
-				@foreach (var segment in segmentRepo.segments)
-				{
-					<option value="@segment.SegmentId">@segment.SegmentTitle
-						@if (@segment.Category != null)
-						{
-							<span> (@segment.Category.Categories)</span>
-						}
-					</option>
-				}
-			</InputSelect>
-		</div>
+			<div class="col-lg-8">
+				<label>Correct answer (Has to be identical with one of the answers):</label>
+				<InputText id="QuestionAnswer" @bind-Value="QuestionToEdit.CorrectAnswer" class="form-control"></InputText>
+				<p class="alert-warning">@ErrorMessage</p>
+			</div>
 
-		<br />
-		<button type="submit" class="btn btn-primary">Submit</button>
-		<button type="button" class="btn btn-primary" @onclick="DeleteQuestion">Delete Segment</button>
-	</EditForm>
+			<div class="col-lg-8">
+				<label>Explanation:</label>
+				<InputTextArea id="QuestionExplanation" @bind-Value="QuestionToEdit.Explanation" class="form-control"></InputTextArea>
+				<br />
+			</div>
+
+			<div class="col-lg-8">
+				<label>Choose segment:</label>
+				<InputSelect @bind-Value="QuestionToEdit.SegmentId" class="form-select">
+					<option value="">None</option>
+					@foreach (var segment in segmentRepo.segments)
+					{
+						<option value="@segment.SegmentId">
+							@segment.SegmentTitle
+							@if (@segment.Category != null)
+							{
+								<span> (@segment.Category.Categories)</span>
+							}
+						</option>
+					}
+				</InputSelect>
+			</div>
+
+			<br />
+			<button type="submit" class="btn btn-outline-dark" style="color:antiquewhite">Submit</button>
+			<button type="button" class="btn btn-outline-dark" style="color:antiquewhite" @onclick="DeleteQuestion">Delete Segment</button>
+		</EditForm>
+
+	</div>
+
 }
 else
 {
