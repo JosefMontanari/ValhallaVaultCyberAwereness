@@ -43,12 +43,12 @@
 				@foreach (var category in categoryRepo.categories)
 				{
 					<tr>
-						<td class="fw-bold">@category.Categories</td>
+						<td class="fw-bold" style="color:antiquewhite">@category.Categories</td>
 						<td>
 							<ol>
 								@foreach (var segment in category.Segments)
 								{
-									<li>
+									<li style="color:antiquewhite">
 										@segment.SegmentTitle
 									</li>
 								}
@@ -99,22 +99,22 @@
 			@foreach (var segment in Segments)
 			{
 				<tr>
-					<td class="fw-bold">@segment.SegmentTitle</td>
+							<td class="fw-bold" style="color:antiquewhite">@segment.SegmentTitle</td>
 							@if(segment.CategoryId != null)
 							{
-								
-								<td>@segment.Category.Categories</td>
+
+								<td style="color:antiquewhite">@segment.Category.Categories</td>
 							}
 							else
 							{
-								<td>This segment has no Category at the moment</td>
+								<td style="color:antiquewhite">This segment has no Category at the moment</td>
 
 							}
 							<td>
 						<ol>
 							@foreach (var question in segment.Question)
 							{
-								<li>
+										<li style="color:antiquewhite">
 									@question.Title
 								</li>
 							}
@@ -166,31 +166,31 @@
 			@foreach (var question in Questions)
 			{
 				<tr>
-					<td class="fw-bold">@question.Title</td>
+							<td class="fw-bold" style="color:antiquewhite">@question.Title</td>
 						@if(question.PossibleAnswers != null)
 					{
 								@if (!string.IsNullOrWhiteSpace(question.Questions))
 								{
-									<td>@question.Questions</td>
+									<td style="color:antiquewhite">@question.Questions</td>
 
 								}
 								else
 								{
-									<td>Not specified</td>
+									<td style="color:antiquewhite">Not specified</td>
 								}
-								<td>
-									<ol>
+								<td style="color:antiquewhite">
+									<ol >
 									@foreach (var answer in question.PossibleAnswers)
 									{
 											if (!string.IsNullOrWhiteSpace(answer))
 											{
-												<li>
+												<li style="color:antiquewhite">
 													@answer
 												</li>
 											}
 											else
 											{
-												<li>
+												<li style="color:antiquewhite">
 													Not specified
 												</li>
 											}
@@ -200,35 +200,35 @@
 								
 									@if (!string.IsNullOrWhiteSpace(question.CorrectAnswer))
 									{
-									<td>
+									<td style="color:antiquewhite">
 										@question.CorrectAnswer
 									</td>
 
 									}
 									else
 									{
-									<td>
+									<td style="color:antiquewhite">
 										Not specified
 									</td>
 									}
 					}
 					else
 					{
-						<td>Not specified</td>
+								<td style="color:antiquewhite">Not specified</td>
 						<td>
 							<ol>
-								<li>
+										<li style="color:antiquewhite">
 									Not specified
 								</li>
-								<li>
+										<li style="color:antiquewhite">
 									Not specified
 								</li>
-								<li>
+										<li style="color:antiquewhite">
 									Not specified
 								</li>
 							</ol>
 						</td>
-						<td>
+								<td style="color:antiquewhite">
 							Not specified
 						</td>
 					}
