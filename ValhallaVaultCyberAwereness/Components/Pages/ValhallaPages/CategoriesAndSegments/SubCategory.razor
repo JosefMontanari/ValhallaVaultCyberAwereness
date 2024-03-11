@@ -4,8 +4,6 @@
 @using ValhallaVaultCyberAwereness.Service
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
 
- 
-
 @if(segments.Count() != 0)
 {
     <h3>@segments.FirstOrDefault(t =>t.SegmentId == subCategoryId).SegmentTitle </h3>
@@ -14,20 +12,16 @@
 @if (segments.Any())
 {
     <div>
-      
-      
                 <!--Displaya alla questions will varje fråga-->
         <div>
         @foreach (var question in questions.Where(q => q.SegmentId == subCategoryId))
                 {
                           <br />
-                        <p><strong>Subkategori @question.Title</strong></p> 
-                      
+                        <p><strong>Subkategori @question.Title</strong></p>          
                 }
             <a href="/questionpage/@categoryId/@subCategoryId">  <button class="btn btn-outline-dark" style="color:antiquewhite">Testa frågorna för del @subCategoryId</button> </a>
         </div>
     </div>
-
 }
 else
 {

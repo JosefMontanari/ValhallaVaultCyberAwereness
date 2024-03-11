@@ -36,7 +36,7 @@
                     <li>
                         @segment.SegmentTitle
                         - Antal rätt svar: @segment.CalculateCorrectAnswers(userAnswersbyid, @user).ToString("F2")%
-
+                        @* - Antal rätt procent: @segment.EightyPercentCorrectAnswers(userAnswersbyid, @user).ToString("F2")% *@
                     </li>
                 }
             </ul>

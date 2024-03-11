@@ -20,7 +20,7 @@
 <h3>Frågor</h3>
 <br />
 <br />
-@if (questionsForPage != null)
+@if (questionsForPage != null && canStartOrNot == true)
 {
 
 @if (CounterIndexQ < questionsForPage.Count)
@@ -130,6 +130,45 @@
 	private bool IsAnswerCorrect;
 	private string UserchossenAnswer = "";
 
+	private bool canStartOrNot = false;
+	private List<AnswerUser>? userAnswersbyid;
+	private string userId;
+
+
+	private async Task StartSegment(int segmentId)
+	{
+		if (segments.Any())
+		{
+			// låt user starta första segment
+			if (segmentId == segments.First().SegmentId)
+			{
+				canStartOrNot = true;
+				return;
+				// Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+			}
+
+			// kolla om tidigare segement är klar med -1 annars 0 (använd linq)
+			var previousSegmentId = segments
+				.OrderBy(s => s.SegmentId)
+				.FirstOrDefault(s => s.SegmentId >= segmentId - 1)?.SegmentId ?? 0;
+
+			var previousSegment = segments.FirstOrDefault(s => s.SegmentId == previousSegmentId);
+
+			if (previousSegment != null)
+			{
+				//räkna om prev.Segment till percentCorrect för att låta user gå vidare
+				double percentCorrect = previousSegment.CalculateCorrectAnswers(userAnswersbyid, userId);
+
+				if (percentCorrect >= 80)
+				{
+					canStartOrNot = true;
+					// Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+				}
+			}
+		}
+	}
+
+
 	private void Reset() //Starta om frågorna. counterindex startar om frågorna, men resten av variablerna nedan reseta så så inte "kontrolellera svar" buggade
 	{
 		CounterIndexQ = 0;
@@ -185,7 +224,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-	
+
 		if (questionId != 0)
 		{
 			question = await questionRepos.GetQuestionByIdAsync(questionId);
@@ -202,7 +241,7 @@
 			questions = await questionRepo.GetAllQuestionAsync();
 			questionsForPage = await questionRepo.GetSegmentQuestionAsync(subCategoryId);
 
-
+			StartSegment(subCategoryId);
 		}
 	}
 
