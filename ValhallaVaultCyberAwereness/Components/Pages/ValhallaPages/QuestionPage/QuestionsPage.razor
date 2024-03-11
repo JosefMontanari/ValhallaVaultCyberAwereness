@@ -241,6 +241,12 @@
 			questions = await questionRepo.GetAllQuestionAsync();
 			questionsForPage = await questionRepo.GetSegmentQuestionAsync(subCategoryId);
 
+			var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			var loggedInUser = authenticCheck.User;
+			var userObject = await UserManager.GetUserAsync(loggedInUser);
+			userId = userObject.Id;
+			userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(userId);
+
 			StartSegment(subCategoryId);
 		}
 	}
