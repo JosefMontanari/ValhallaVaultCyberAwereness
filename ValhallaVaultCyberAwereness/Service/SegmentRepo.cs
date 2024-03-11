@@ -62,6 +62,18 @@ namespace ValhallaVaultCyberAwereness.Service
 
             }
         }
+
+        // test 1
+        public async Task<List<Question>> GetQuestionsForSegmentAsync(int segmentId)
+        {
+
+            return await context.Questions
+                .Where(q => q.SegmentId == segmentId)
+                .ToListAsync();
+        }
+
+
+
     }
 
 }

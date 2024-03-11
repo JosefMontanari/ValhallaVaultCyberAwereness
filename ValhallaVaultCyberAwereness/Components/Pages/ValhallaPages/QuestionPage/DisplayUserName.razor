@@ -1,10 +1,24 @@
 ﻿@page "/displayusername"
+@rendermode InteractiveServer
 
-<h3>User Information</h3>
-
+<input type="checkbox" class="form-check-input" @onchange="CheckChanged" />
+<p>@checkChanged</p>
 
 @code {
-
-
-
+    [Parameter]
+    public bool isChecked { get; set; } = true;
+    private string checkChanged = "i am not checked";
+    private void CheckChanged()
+    {
+        if (isChecked)
+        {
+            checkChanged = "You have checked";
+            isChecked = !isChecked;
+        }
+        else
+        {
+            checkChanged = "you have unchecked";
+            isChecked = !isChecked;
+        }
+    }
 }
