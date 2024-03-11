@@ -3,6 +3,7 @@
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize]
 
@@ -23,14 +24,9 @@
                     <br />
             }
     </div>
-    
-}
-else
-{
-    <p>Hmm.. error 404.</p>
-}
 
-
+}
+else{<p>No segments Found.</p>}
 
 @code {
     private List<Segment> segments = new List<Segment>();
