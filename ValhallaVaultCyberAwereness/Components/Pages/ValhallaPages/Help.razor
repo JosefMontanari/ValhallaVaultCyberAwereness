@@ -10,6 +10,8 @@
 @inject SignInManager<ApplicationUser> signInManager
 @inject UserManager<ApplicationUser> userManager
 @inject AuthenticationStateProvider authenticationstateProvider
+@inject TicketRepo ticketRepo
+
 
 <h1>Submit a ticket to our Help Desk</h1>
 
@@ -29,7 +31,8 @@
 			</InputSelect>
 		</div>
 
-		<div class="col-lg-4">
+@* 		TODO: How to validate this as an email adress?
+ *@		<div class="col-lg-4">
 			<label>Email:</label>
 			<InputText @bind-Value="Ticket.EmailAdress" class="form-control"></InputText>
 		</div>
@@ -67,5 +70,7 @@
 		var user = await userManager.GetUserAsync(loggedInUser);
 		Ticket.SubmittedByUser = user;
 		Ticket.TimeSubmitted = DateTime.Now;
+		await ticketRepo.AddTicketAsync(Ticket);
+
 	}
 }

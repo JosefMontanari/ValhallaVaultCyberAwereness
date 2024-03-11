@@ -7,6 +7,8 @@ namespace ValhallaVaultCyberAwereness.Data.Models
 		[Key]
 		public int TicketId { get; set; }
 		public List<string> ProblemAreas { get; set; } = new List<string>() { "Categories", "Segments", "Questions", "Account", "Login", "Other" };
+
+		[Required(ErrorMessage = "Choose which part of the app you are having issues with")]
 		public string ProblemArea { get; set; } = null!;
 		public DateTime TimeSubmitted { get; set; }
 
