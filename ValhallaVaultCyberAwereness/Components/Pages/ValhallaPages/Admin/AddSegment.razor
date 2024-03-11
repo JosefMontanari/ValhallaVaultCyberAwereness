@@ -8,29 +8,32 @@
 @inject NavigationManager navigationManager
 @attribute [Authorize(Roles = "Admin")]
 
+<div class="row">
+	<EditForm Model="SegmentToAdd" OnValidSubmit="HandleSubmit">
+		<div class="col-lg-8">
+			<label>Segment name:</label>
+			<DataAnnotationsValidator />
+			<InputText id="SegmentName" @bind-Value="SegmentToAdd.SegmentTitle" class="form-control"></InputText>
+			<ValidationSummary></ValidationSummary>
+			<br />
+		</div>
 
-<EditForm Model="SegmentToAdd" OnValidSubmit="HandleSubmit">
-	<div>
-		<label>Segment name:</label>
-		<DataAnnotationsValidator />
-		<InputText id="SegmentName" @bind-Value="SegmentToAdd.SegmentTitle" class="form-control"></InputText>
-		<ValidationSummary></ValidationSummary>
-	</div>
+		<div class="col-lg-8">
+			<label>Choose category:</label>
+			<InputSelect @bind-Value="SegmentToAdd.CategoryId" class="form-select">
+				<option value="">None</option>
+				@foreach (var category in categoryRepo.categories)
+				{
+					<option value="@category.CategoryId">@category.Categories</option>
+				}
+			</InputSelect>
+		</div>
+		<br />
+		<button type="submit" class="btn btn-outline-dark" style="color:antiquewhite">Add new segment</button>
 
-	<div>
-		<label>Choose category:</label>
-		<InputSelect @bind-Value="SegmentToAdd.CategoryId" class="form-select">
-			<option value="">None</option>
-			@foreach (var category in categoryRepo.categories)
-			{
-				<option value="@category.CategoryId">@category.Categories</option>
-			}
-		</InputSelect>
-	</div>
-	<br />
-	<button type="submit" class="btn btn-primary">Add new segment</button>
+	</EditForm>
 
-</EditForm>
+</div>
 
 @code {
 	public Segment? SegmentToAdd { get; set; } = new();
