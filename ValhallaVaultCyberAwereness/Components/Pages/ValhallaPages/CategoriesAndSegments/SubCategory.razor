@@ -3,6 +3,7 @@
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
+@attribute [Authorize]
 
 @if(segments.Count() != 0)
 {
