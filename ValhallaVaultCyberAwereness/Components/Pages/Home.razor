@@ -1,5 +1,6 @@
 ﻿@page "/home"
 
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using ValhallaVaultCyberAwereness.Data
 @using ValhallaVaultCyberAwereness.Data.Models
@@ -15,7 +16,7 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @inject AuthenticationStateProvider AuthStateProvider
-
+@attribute [Authorize]
 
 <PageTitle>Home</PageTitle>
 
