@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ValhallaVaultCyberAwereness.Data.Models
 {
@@ -6,6 +7,7 @@ namespace ValhallaVaultCyberAwereness.Data.Models
 	{
 		[Key]
 		public int TicketId { get; set; }
+		[NotMapped]
 		public List<string> ProblemAreas { get; set; } = new List<string>() { "Categories", "Segments", "Questions", "Account", "Login", "Other" };
 
 		[Required(ErrorMessage = "Choose which part of the app you are having issues with")]
@@ -17,6 +19,7 @@ namespace ValhallaVaultCyberAwereness.Data.Models
 		public string ProblemDescription { get; set; } = null!;
 
 		[Required(ErrorMessage = "Please provide an email in order for us to get back to you")]
+		[EmailAddress(ErrorMessage = "Input must be an email address")]
 		public string EmailAdress { get; set; } = null!;
 		public ApplicationUser? SubmittedByUser { get; set; }
 	}

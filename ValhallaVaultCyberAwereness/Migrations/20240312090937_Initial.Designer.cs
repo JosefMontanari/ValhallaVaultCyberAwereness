@@ -12,8 +12,8 @@ using ValhallaVaultCyberAwereness.Data;
 namespace ValhallaVaultCyberAwereness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240308073342_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240312090937_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -722,6 +722,43 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.TicketModel", b =>
+                {
+                    b.Property<int>("TicketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+
+                    b.Property<string>("EmailAdress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProblemArea")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProblemAreas")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProblemDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubmittedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("TimeSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TicketId");
+
+                    b.HasIndex("SubmittedByUserId");
+
+                    b.ToTable("UserTickets");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -806,6 +843,15 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.TicketModel", b =>
+                {
+                    b.HasOne("ValhallaVaultCyberAwereness.Data.ApplicationUser", "SubmittedByUser")
+                        .WithMany()
+                        .HasForeignKey("SubmittedByUserId");
+
+                    b.Navigation("SubmittedByUser");
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwereness.Data.Models.Category", b =>

@@ -316,33 +316,32 @@
 		}
 	}
 
-	public async Task EditCategory(int id)
+	public void EditCategory(int id)
 	{
 		string type = "Category";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
 
-	public async Task EditSegment(int id)
+	public void EditSegment(int id)
 	{
 		string type = "Segment";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
-	public async Task EditQuestion(int id)
+	public void EditQuestion(int id)
 	{
 		string type = "Question";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
-	public async Task AddCategory()
+	public void AddCategory()
 	{
 		navigationManager.NavigateTo("/add/category");
 	}
-	public async Task AddSegment()
+	public void AddSegment()
 	{
 		navigationManager.NavigateTo($"/add/segment");
 	}
 	public void AddQuestion()
 	{
-		string type = "Question";
 		navigationManager.NavigateTo($"/add/question");
 	}
 }

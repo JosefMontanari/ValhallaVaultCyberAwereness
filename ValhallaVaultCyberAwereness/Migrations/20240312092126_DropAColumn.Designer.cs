@@ -12,8 +12,8 @@ using ValhallaVaultCyberAwereness.Data;
 namespace ValhallaVaultCyberAwereness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240311181715_usertickets")]
-    partial class usertickets
+    [Migration("20240312092126_DropAColumn")]
+    partial class DropAColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -735,10 +735,6 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProblemArea")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProblemAreas")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
