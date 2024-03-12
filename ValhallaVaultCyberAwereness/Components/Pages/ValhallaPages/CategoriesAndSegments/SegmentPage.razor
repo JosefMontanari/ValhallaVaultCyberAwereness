@@ -40,13 +40,9 @@
                 }
 
                 @*Om  percentCorrect är mindre än 80 && vald segmentId inte är lika med currentSegmentId, visa deras % *@
-                @if (percentCorrect < 80 && segment.SegmentId != currentSegmentId)
+                @if (percentCorrect > 0 && segment.SegmentId != currentSegmentId)
                 {
-                    <p>Du har mindre än 80% rätt i detta segment</p> 
-                }
-                else if (percentCorrect >= 80)
-                {
-                    <p>Antal rätt i detta segment: @percentCorrect.ToString("F2")%</p>
+                    <p>Antal rätt i detta segment: @percentCorrect.ToString("F2")% </p>
                 }
             </div>
             <br />
@@ -139,8 +135,7 @@ else
                 }
                 else
                 {
-                    errorMessage = "Ni måste slutföra den första/tidigare segment för att kunna fortsätta till denna";
-
+                    errorMessage = "Ni måste slutföra minst 80% på segmentet innan detta";
                     // fixa denna och displaya på endast segment som inte är slutförd - använd segmentId för att displayas på.
                 }
             }
