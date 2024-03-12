@@ -21,9 +21,10 @@
 <PageTitle>Home</PageTitle>
 
 <div class="container">
-    <h1 class="mt-5">Step into the Cyber Sentinel Training Hub at Valhalla Vault for your Cybersecurity Education Journey</h1>
+    <h1 class="mt-5">Ta steget in i Cyber Sentinel Training Hub på Valhalla Vault och påbörja din resa genom cybersäkerhetsutbildningen</h1>
 
     <div class="container py-4">
+
         <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
             <video autoplay muted loop style="position: fixed; object-fit: cover; z-index: -1; top: 0; left: 0; width: 100%; height: 100%;">
                 <source src="/Videos/circuit.mp4" type="video/mp4">
@@ -32,15 +33,15 @@
             </div>
         </div>
     </div>
-
+     
     <br>
     <div class="row mt-3">
         <div class="col">
             <div class="search-input">
-                <input list="items" type="text" class="form-control" placeholder="Search..." @bind="Search" style="height: 40px; background-color: beige; color: blue; border: none;" />
+                <input list="items" type="text" class="form-control" placeholder="Sök..." @bind="Search" style="height: 40px; background-color: beige; color: black; border: none;" />
             </div>
             <div class="search-button mt-3">
-                <button class="btn btn-primary" @onclick="SearchItems">Search</button>
+                <button class="btn btn-outline-dark" @onclick="SearchItems" style="color: antiquewhite;">Sök</button>
             </div>
         </div>
     </div>
@@ -99,7 +100,6 @@
     private List<Question>? questionsget = new List<Question>();
 
 
-
     private List<string> ChosenItems
     {
         get
@@ -110,7 +110,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while filtering items: {ex.Message}");
+                Console.WriteLine($"Ett fel uppstod vid filtrering av objekt: {ex.Message}");
                 return new List<string>();
             }
         }
@@ -131,12 +131,12 @@
                 }
                 else
                 {
-                    throw new Exception("No matching category found.");
+                    throw new Exception("Ingen matchande kategori hittades.");
                 }
             }
             else
             {
-                throw new Exception("Search field is empty.");
+                throw new Exception("Sökfältet är tomt.");
             }
         }
         catch (Exception ex)
