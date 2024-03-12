@@ -13,5 +13,8 @@ public class Category
 
 	public List<Segment>? Segments { get; set; } = new List<Segment>(); // har flera segment
 
-	//public int SegmentId { get; set; } // F-key 
+    //public int SegmentId { get; set; } // F-key 
+
+
+
 }
