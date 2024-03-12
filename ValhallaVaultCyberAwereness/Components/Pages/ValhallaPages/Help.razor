@@ -11,6 +11,7 @@
 @inject UserManager<ApplicationUser> userManager
 @inject AuthenticationStateProvider authenticationstateProvider
 @inject TicketRepo ticketRepo
+@inject NavigationManager navigationManager
 
 
 <h1>Submit a ticket to our Help Desk</h1>
@@ -72,5 +73,6 @@
 		Ticket.TimeSubmitted = DateTime.Now;
 		await ticketRepo.AddTicketAsync(Ticket);
 
+		navigationManager.NavigateTo("/help/success");
 	}
 }

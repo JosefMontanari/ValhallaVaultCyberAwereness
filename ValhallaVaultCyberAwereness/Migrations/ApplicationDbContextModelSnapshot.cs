@@ -735,10 +735,6 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProblemAreas")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ProblemDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
