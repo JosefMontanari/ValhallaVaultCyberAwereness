@@ -193,13 +193,16 @@ else
 	private async void DeleteCategory()
 	{
 		await categoryRepo.DeleteCategoryAsync(CategoryToEdit);
+		navigationManager.NavigateTo("/admin");
 	}
 	private async void DeleteSegment()
 	{
 		await segmentRepo.DeleteSegment(SegmentToEdit);
+		navigationManager.NavigateTo("/admin");
 	}
 	private async void DeleteQuestion()
 	{
 		await questionRepo.DeleteQuestionAsync(QuestionToEdit);
+		navigationManager.NavigateTo("/admin");
 	}
 }
