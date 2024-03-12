@@ -17,10 +17,11 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
+
 <h3>Frågor</h3>
 <br />
 <br />
-@if (questionsForPage != null)
+@if (questionsForPage != null && canStartOrNot == true)
 {
 
 @if (CounterIndexQ < questionsForPage.Count)
@@ -28,7 +29,7 @@
 	<div class="container mt-5" style="border:dotted; box-sizing:border-box">
 		<div>
 			<h3><b>@questionsForPage[CounterIndexQ].Title </b></h3>
-			<h5> @questionsForPage[CounterIndexQ].Explanation </h5>
+			<h5> @questionsForPage[CounterIndexQ].Questions </h5>
 		</div>
 
 			<form @onsubmit="() => {SaveUserAnswerAsync(questionsForPage[CounterIndexQ], selectedAnswer);ChangeQuestion();}">
@@ -48,26 +49,43 @@
 				{
 					<label>No answers added</label>
 				}
+				
+		
+
 			</div>
+				@if (IsAnswerCorrect && !String.IsNullOrEmpty(questionsForPage[CounterIndexQ].Explanation))
+					{
+						<div>
+							<br />
+						<h5>Förklaring</h5>
+						<p>@questionsForPage[CounterIndexQ].Explanation </p>
+						</div>
+					}
 				<div class="d-flex align-items-center">
 					@if(CounterIndexQ >0)
 					{
 					<div>
-						<br />
-							<button type="button" class="btn btn-outline-primary" style="text-align:right;" @onclick="() => CounterIndexQ -=1 ">Tillbaka</button>
-						<br />
+
+							<br /> 
+							<button type="button" class="btn btn-outline-dark" style="text-align:right;color:antiquewhite" @onclick="() => {
+								CounterIndexQ -=1;
+									IsAnswerCorrect=false;}
+								">Tillbaka</button>
+					<br />
 					</div>
 					}
 				
 					<div class="ml-5 mr-5">
 						<br />
-						<button class=" btn btn-outline-primary mr-2 ml-2" style="text-align:center;" type="button" @onclick=(checkAnswer)>Kontrollera svar</button>
+						<button class=" btn btn-outline-dark mr-2 ml-2" style="text-align:center; color: antiquewhite;" type="button" @onclick=(checkAnswer)>Kontrollera svar</button>
 						<br />
 					</div>
 			
 					<div>
 						<br />
-						<button type="submit" class="btn btn-outline-primary" style="text-align:right;">Nästa</button>
+
+						<button type="submit" class="btn btn-outline-dark" @onclick="() =>IsAnswerCorrect=false" style="text-align:right;color:antiquewhite">Nästa</button>
+
 						<br />
 					</div>
 				</div>
@@ -76,14 +94,18 @@
 		<br />
 
 	}
-	else
+	else if (CounterIndexQ == questionsForPage.Count && questionsForPage.Count > 0)
 	{
 		<div class="container " style="border:dotted; box-sizing:border-box">
 			<div class="text-center">
 				<h1>Klar med frågorna för detta segment</h1>
 				<br />
-				<button class=" btn btn-outline-primary btn-lg" style="text-align:center;" type="button" @onclick="@Reset">Starta igen?</button>
+				<button class=" btn btn-outline-dark btn-lg" style="text-align:center; color: antiquewhite;" type="button" @onclick="@Reset">Starta igen?</button>
 				<br />
+				<br />
+				<button class=" btn btn-outline-dark btn-lg" style="text-align:center; color: antiquewhite;" type="button" @onclick="@GoToCategoryPage">Gå till kategorier</button>
+				<br />
+			
 			</div>
 			
 		</div>
@@ -130,6 +152,45 @@
 	private bool IsAnswerCorrect;
 	private string UserchossenAnswer = "";
 
+	private bool canStartOrNot = false;
+	private List<AnswerUser>? userAnswersbyid;
+	private string userId;
+
+
+	private async Task StartSegment(int segmentId)
+	{
+		if (segments.Any())
+		{
+			// låt user starta första segment
+			if (segmentId == segments.First().SegmentId)
+			{
+				canStartOrNot = true;
+				return;
+				// Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+			}
+
+			// kolla om tidigare segement är klar med -1 annars 0 (använd linq)
+			var previousSegmentId = segments
+				.OrderBy(s => s.SegmentId)
+				.FirstOrDefault(s => s.SegmentId >= segmentId - 1)?.SegmentId ?? 0;
+
+			var previousSegment = segments.FirstOrDefault(s => s.SegmentId == previousSegmentId);
+
+			if (previousSegment != null)
+			{
+				//räkna om prev.Segment till percentCorrect för att låta user gå vidare
+				double percentCorrect = previousSegment.CalculateCorrectAnswers(userAnswersbyid, userId);
+
+				if (percentCorrect >= 80)
+				{
+					canStartOrNot = true;
+					// Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+				}
+			}
+		}
+	}
+
+
 	private void Reset() //Starta om frågorna. counterindex startar om frågorna, men resten av variablerna nedan reseta så så inte "kontrolellera svar" buggade
 	{
 		CounterIndexQ = 0;
@@ -137,6 +198,20 @@
 		IsAnswerCorrect = false;
 		selectedAnswer = null;
 	}
+
+
+	private void GoToCategoryPage() 
+	{
+		// gå till Categoriy PAge
+		navigationManager.NavigateTo("/categorypage");
+	}
+
+	private void GoToSegment() 
+	{
+		// Gå till nästa segment
+
+	}
+
 
 	private void ChangeQuestion() //Hålla koll på vilken fråga man är på. 
 	{
@@ -185,7 +260,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-	
+
 		if (questionId != 0)
 		{
 			question = await questionRepos.GetQuestionByIdAsync(questionId);
@@ -202,7 +277,13 @@
 			questions = await questionRepo.GetAllQuestionAsync();
 			questionsForPage = await questionRepo.GetSegmentQuestionAsync(subCategoryId);
 
+			var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			var loggedInUser = authenticCheck.User;
+			var userObject = await UserManager.GetUserAsync(loggedInUser);
+			userId = userObject.Id;
+			userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(userId);
 
+			StartSegment(subCategoryId);
 		}
 	}
 

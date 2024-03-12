@@ -23,9 +23,8 @@ public class Segment
     public double CalculateCorrectAnswers(List<AnswerUser> userAnswersbyid, string userId)
     {
         // räkna antalet questions
-        if (Question is null || Question.Count == 0)
+        if (Question == null || Question.Count == 0)
             return 0;
-
 
         // gå igenom alla Questions i Segments listan
         int correctCount = 0;
@@ -39,9 +38,8 @@ public class Segment
             {
                 correctCount++;
             }
-
         }
-
         return (double)correctCount / Question.Count * 100;
     }
 }
+

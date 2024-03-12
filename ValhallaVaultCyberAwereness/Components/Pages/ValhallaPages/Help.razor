@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwereness.Data
+@using ValhallaVaultCyberAwereness.Data.Models
+@using ValhallaVaultCyberAwereness.Service
+@page "/help"
+@rendermode InteractiveServer
+@inject CategoryRepo categoryRepo
+@inject SegmentRepo segmentRepo
+@inject QuestionRepo questionRepo
+@inject SignInManager<ApplicationUser> signInManager
+@inject UserManager<ApplicationUser> userManager
+@inject AuthenticationStateProvider authenticationstateProvider
+@inject TicketRepo ticketRepo
+@inject NavigationManager navigationManager
+
+
+<h1>Submit a ticket to our Help Desk</h1>
+
+<EditForm Model="Ticket" OnValidSubmit="HandleSubmit">
+	<div class="row">
+
+		<div class="col-lg-4">
+			<label>What part of the app are you having issues with?</label>
+			<InputSelect style="width:370px" @bind-Value="Ticket.ProblemArea" class="form-select">
+				<option value="">Please choose an option</option>   @* TODO: Validate option! *@
+				@foreach (var area in Ticket.ProblemAreas)
+				{
+					<option value="@area">
+						@area
+					</option>
+				}
+			</InputSelect>
+		</div>
+
+@* 		TODO: How to validate this as an email adress?
+ *@		<div class="col-lg-4">
+			<label>Email:</label>
+			<InputText @bind-Value="Ticket.EmailAdress" class="form-control"></InputText>
+		</div>
+
+	
+		<div class="col-lg-8">
+		<label>Please describe the issue for us:</label>
+		<DataAnnotationsValidator />
+		<InputTextArea id="Description" @bind-Value="Ticket.ProblemDescription" class="form-control" style="width:370px; height:250px"></InputTextArea>
+		</div>
+
+
+
+
+		<br />
+		<br />
+		<div class="col-lg-8">
+			<button type="submit" class="btn btn-outline-dark" style="color:antiquewhite">Submit</button>
+		</div>
+		<ValidationSummary></ValidationSummary>
+
+	</div>
+</EditForm>
+	
+
+@code {
+	public TicketModel Ticket { get; set; } = new();
+
+
+
+	public async void HandleSubmit()
+	{
+		var authUser = await authenticationstateProvider.GetAuthenticationStateAsync();
+		var loggedInUser = authUser.User;
+		var user = await userManager.GetUserAsync(loggedInUser);
+		Ticket.SubmittedByUser = user;
+		Ticket.TimeSubmitted = DateTime.Now;
+		await ticketRepo.AddTicketAsync(Ticket);
+
+		navigationManager.NavigateTo("/help/success");
+	}
+}

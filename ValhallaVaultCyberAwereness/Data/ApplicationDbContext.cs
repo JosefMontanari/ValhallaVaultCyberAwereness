@@ -12,6 +12,7 @@ namespace ValhallaVaultCyberAwereness.Data
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Segment> Segments { get; set; }
 		public DbSet<AnswerUser> UserAnswers { get; set; }
+		public DbSet<TicketModel> UserTickets { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

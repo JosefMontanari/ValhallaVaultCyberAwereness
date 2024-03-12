@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ValhallaVaultCyberAwereness.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -169,6 +169,29 @@ namespace ValhallaVaultCyberAwereness.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserTickets",
+                columns: table => new
+                {
+                    TicketId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProblemAreas = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProblemArea = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimeSubmitted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProblemDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailAdress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubmittedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTickets", x => x.TicketId);
+                    table.ForeignKey(
+                        name: "FK_UserTickets_AspNetUsers_SubmittedByUserId",
+                        column: x => x.SubmittedByUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -376,6 +399,11 @@ namespace ValhallaVaultCyberAwereness.Migrations
                 name: "IX_UserAnswers_UserId",
                 table: "UserAnswers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTickets_SubmittedByUserId",
+                table: "UserTickets",
+                column: "SubmittedByUserId");
         }
 
         /// <inheritdoc />
@@ -400,13 +428,16 @@ namespace ValhallaVaultCyberAwereness.Migrations
                 name: "UserAnswers");
 
             migrationBuilder.DropTable(
+                name: "UserTickets");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Segments");

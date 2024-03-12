@@ -7,16 +7,19 @@
 @inject NavigationManager navigationManager
 @attribute [Authorize(Roles = "Admin")]
 
-<EditForm Model="CategoryToAdd" OnValidSubmit="HandleSubmit">
-	<div>
-		<label>Category name:</label>
-		<DataAnnotationsValidator />
-		<InputText id="CategoryName" @bind-Value="CategoryToAdd.Categories" class="form-control"></InputText>
-		<ValidationSummary></ValidationSummary>
-	</div>
-	<br />
-	<button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+<div class="row">
+	<EditForm Model="CategoryToAdd" OnValidSubmit="HandleSubmit">
+		<div class="col-lg-6">
+			<label>Category name:</label>
+			<DataAnnotationsValidator />
+			<InputText id="CategoryName" @bind-Value="CategoryToAdd.Categories" class="form-control"></InputText>
+			<ValidationSummary></ValidationSummary>
+		</div>
+		<br />
+		<button type="submit" class="btn btn-outline-dark" style="color:antiquewhite">Submit</button>
+	</EditForm>
+</div>
+
 
 @code {
 	public Category? CategoryToAdd { get; set; } = new();

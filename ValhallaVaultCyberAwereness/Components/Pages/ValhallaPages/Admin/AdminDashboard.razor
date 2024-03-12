@@ -18,7 +18,7 @@
 
 <br />
 
-<button class="btn btn-primary" @onclick="ToggleCategories">@CatBtnText</button>
+<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="ToggleCategories">@CatBtnText</button>
 
 
 <br />
@@ -43,19 +43,19 @@
 				@foreach (var category in categoryRepo.categories)
 				{
 					<tr>
-						<td class="fw-bold">@category.Categories</td>
+						<td class="fw-bold" style="color:antiquewhite">@category.Categories</td>
 						<td>
 							<ol>
 								@foreach (var segment in category.Segments)
 								{
-									<li>
+									<li style="color:antiquewhite">
 										@segment.SegmentTitle
 									</li>
 								}
 							</ol>
 						</td>
 						<td>
-							<button class="btn btn-primary" @onclick="() => EditCategory(category.CategoryId)">
+							<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="() => EditCategory(category.CategoryId)">
 								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 									<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
 								</svg>
@@ -65,7 +65,7 @@
 				}
 			</tbody>
 		</table>
-		<button class="btn btn-primary" @onclick="AddCategory">Add Category</button>
+		<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="AddCategory">Add Category</button>
 		<br />
 		<hr />
 	</div>
@@ -73,7 +73,7 @@
 
 
 
-<button class="btn btn-primary" @onclick="ToggleSegments">@SegBtnText</button>
+<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="ToggleSegments">@SegBtnText</button>
 <br />
 <br />
 <br />
@@ -99,29 +99,29 @@
 			@foreach (var segment in Segments)
 			{
 				<tr>
-					<td class="fw-bold">@segment.SegmentTitle</td>
+							<td class="fw-bold" style="color:antiquewhite">@segment.SegmentTitle</td>
 							@if(segment.CategoryId != null)
 							{
-								
-								<td>@segment.Category.Categories</td>
+
+								<td style="color:antiquewhite">@segment.Category.Categories</td>
 							}
 							else
 							{
-								<td>This segment has no Category at the moment</td>
+								<td style="color:antiquewhite">This segment has no Category at the moment</td>
 
 							}
 							<td>
 						<ol>
 							@foreach (var question in segment.Question)
 							{
-								<li>
+										<li style="color:antiquewhite">
 									@question.Title
 								</li>
 							}
 						</ol>
 					</td>
 					<td>
-						<button class="btn btn-primary" @onclick="() => EditSegment(segment.SegmentId)">
+								<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="() => EditSegment(segment.SegmentId)">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 								<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
 							</svg>
@@ -131,7 +131,7 @@
 			}
 		</tbody>
 	</table>
-			<button class="btn btn-primary" @onclick="AddSegment">Add Segment</button>
+			<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="AddSegment">Add Segment</button>
 			<br />
 			<hr />
 }
@@ -140,7 +140,7 @@
 
 
 
-<button class="btn btn-primary" @onclick="ToggleQuestions">@QueBtnText</button>
+<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="ToggleQuestions">@QueBtnText</button>
 <br />
 <br />
 <br />
@@ -166,31 +166,31 @@
 			@foreach (var question in Questions)
 			{
 				<tr>
-					<td class="fw-bold">@question.Title</td>
+							<td class="fw-bold" style="color:antiquewhite">@question.Title</td>
 						@if(question.PossibleAnswers != null)
 					{
 								@if (!string.IsNullOrWhiteSpace(question.Questions))
 								{
-									<td>@question.Questions</td>
+									<td style="color:antiquewhite">@question.Questions</td>
 
 								}
 								else
 								{
-									<td>Not specified</td>
+									<td style="color:antiquewhite">Not specified</td>
 								}
-								<td>
-									<ol>
+								<td style="color:antiquewhite">
+									<ol >
 									@foreach (var answer in question.PossibleAnswers)
 									{
 											if (!string.IsNullOrWhiteSpace(answer))
 											{
-												<li>
+												<li style="color:antiquewhite">
 													@answer
 												</li>
 											}
 											else
 											{
-												<li>
+												<li style="color:antiquewhite">
 													Not specified
 												</li>
 											}
@@ -200,41 +200,41 @@
 								
 									@if (!string.IsNullOrWhiteSpace(question.CorrectAnswer))
 									{
-									<td>
+									<td style="color:antiquewhite">
 										@question.CorrectAnswer
 									</td>
 
 									}
 									else
 									{
-									<td>
+									<td style="color:antiquewhite">
 										Not specified
 									</td>
 									}
 					}
 					else
 					{
-						<td>Not specified</td>
+								<td style="color:antiquewhite">Not specified</td>
 						<td>
 							<ol>
-								<li>
+										<li style="color:antiquewhite">
 									Not specified
 								</li>
-								<li>
+										<li style="color:antiquewhite">
 									Not specified
 								</li>
-								<li>
+										<li style="color:antiquewhite">
 									Not specified
 								</li>
 							</ol>
 						</td>
-						<td>
+								<td style="color:antiquewhite">
 							Not specified
 						</td>
 					}
 
 					<td>
-						<button class="btn btn-primary" @onclick="() => EditQuestion(question.QuestionId)">
+								<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="() => EditQuestion(question.QuestionId)">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 								<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
 							</svg>
@@ -244,7 +244,7 @@
 			}
 		</tbody>
 	</table>
-			<button class="btn btn-primary" @onclick="AddQuestion">Add Question</button>
+			<button class="btn btn-outline-dark" style="color:antiquewhite" @onclick="AddQuestion">Add Question</button>
 			<br />
 			<hr />
 }
@@ -316,33 +316,32 @@
 		}
 	}
 
-	public async Task EditCategory(int id)
+	public void EditCategory(int id)
 	{
 		string type = "Category";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
 
-	public async Task EditSegment(int id)
+	public void EditSegment(int id)
 	{
 		string type = "Segment";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
-	public async Task EditQuestion(int id)
+	public void EditQuestion(int id)
 	{
 		string type = "Question";
 		navigationManager.NavigateTo($"/edit/{type}/{id}");
 	}
-	public async Task AddCategory()
+	public void AddCategory()
 	{
 		navigationManager.NavigateTo("/add/category");
 	}
-	public async Task AddSegment()
+	public void AddSegment()
 	{
 		navigationManager.NavigateTo($"/add/segment");
 	}
 	public void AddQuestion()
 	{
-		string type = "Question";
 		navigationManager.NavigateTo($"/add/question");
 	}
 }

@@ -1,9 +1,12 @@
 ﻿@page "/segmentpage/{categoryId:int}"
 @using Microsoft.AspNetCore.Authorization
+@using ValhallaVaultCyberAwereness.Data
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
-@inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthenticationStateProvider
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 @attribute [Authorize]
 
@@ -14,19 +17,34 @@
     <div>
         <h4>I detta segment handlar det om @selectedCategory.Categories och dess subkategorier</h4>
         <br />
-            @foreach (var segment in segments)
-            {
-                <div>
-                <a href="/subcategory/@categoryId/@segment.SegmentId" class="btn btn-outline-primary">
-                    <h3><strong>@segment.SegmentTitle</strong></h3>
-                </a>
-                </div>
-                    <br />
-            }
-    </div>
 
+        @foreach (var segment in segments)
+        {
+            // Räkna ut antal rätt , gör if statements sen för > || < 80
+            double percentCorrect = segment.CalculateCorrectAnswers(userAnswersbyid, userId);
+
+            <div>
+                <button type="button" class="btn btn-outline-dark" style="color: antiquewhite" @onclick="() => StartSegment(segment.SegmentId)">
+                    <h3><strong>@segment.SegmentTitle</strong></h3>
+                </button>
+
+                @if (percentCorrect < 80)
+                {
+                    <p>Du har mindre än 80% rätt i detta segment</p>
+                }
+                else if (percentCorrect >= 80)
+                {
+                    <p>Antal rätt i detta segment: @percentCorrect.ToString("F2")%</p>
+                }
+            </div>
+            <br />
+        }
+    </div> 
 }
-else{<p>No segments Found.</p>}
+else
+{
+    <p>No segments Found.</p>
+}
 
 @code {
     private List<Segment> segments = new List<Segment>();
@@ -37,39 +55,77 @@ else{<p>No segments Found.</p>}
     private CategoryRepo categoryRepo { get; set; }
     [Inject]
     private QuestionRepo questionRepo { get; set; }
-    [Inject]
-    private NavigationManager navigationManager { get; set; }
 
     [Parameter]
     public int categoryId { get; set; }
 
+    // test
+    private Segment segment = new Segment();
+
+    private List<AnswerUser> userAnswersById = new List<AnswerUser>();
+
+    
+
+    private List<Category> categories;
+    private List<AnswerUser>? userAnswers;
+    private List<AnswerUser>? userAnswersbyid;
+    private string userId;
+
+    [Inject]
+    private AnswerRepo answerRepo { get; set; }
 
     private Category selectedCategory;
 
     protected override async Task OnInitializedAsync()
     {
         segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
+
         // displaya vald category
         selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
+
+        // Från CP
+        var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var loggedInUser = authenticCheck.User;
+        var userObject = await UserManager.GetUserAsync(loggedInUser);
+        userId = userObject.Id;
+
         // Displaya questions will varje segment
         questions = await questionRepo.GetAllQuestionAsync();
+
+        userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(userId);
     }
 
-    // private void GoToQuestionPage(int questionId)
-    // {
-    //     if(navigationManager != null)
-    //     {
-    //         Console.WriteLine("hehe");
-    //         navigationManager.NavigateTo($"/questionpage/{questionId}");
+    private async Task StartSegment(int segmentId)
+    {
+        if (segments.Any())
+        {
+             // låt user starta första segment
+            if (segmentId == segments.First().SegmentId)
+            {
+                NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
+                return;
+                // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+            }
 
+             // kolla om tidigare segement är klar med -1 annars 0 (använd linq)
+            var previousSegmentId = segments
+                .OrderBy(s => s.SegmentId)
+                .FirstOrDefault(s => s.SegmentId >= segmentId - 1)?.SegmentId ?? 0;
 
-    //     }
-    //     else
-    //     {
-    //         Console.WriteLine("Något fel..");
-    //     }
-    // }
+            var previousSegment = segments.FirstOrDefault(s => s.SegmentId == previousSegmentId);
 
- 
+            if (previousSegment != null)
+            {
+                //räkna om prev.Segment till percentCorrect för att låta user gå vidare
+                double percentCorrect = previousSegment.CalculateCorrectAnswers(userAnswersbyid, userId);
 
+                if (percentCorrect >= 80)
+                {    
+                    NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
+                    // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+                }
+            }
+        }
+    }
 }
+    
