@@ -28,9 +28,21 @@
                     <h3><strong>@segment.SegmentTitle</strong></h3>
                 </button>
 
-                @if (percentCorrect < 80)
+
+                @*Om segmentId i loopen är lika med valt segment: currentSegmentId, så visa visa en error om de andra 80% är mött. Visa errormessage på vald segment *@
+                @if (segment.SegmentId == currentSegmentId)
                 {
-                    <p>Du har mindre än 80% rätt i detta segment</p>
+                    // visa error hårdkodad error i metoden istället för: mindre än 80%
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <p>@errorMessage</p>
+                    }
+                }
+
+                @*Om  percentCorrect är mindre än 80 && vald segmentId inte är lika med currentSegmentId, visa deras % *@
+                @if (percentCorrect < 80 && segment.SegmentId != currentSegmentId)
+                {
+                    <p>Du har mindre än 80% rätt i detta segment</p> 
                 }
                 else if (percentCorrect >= 80)
                 {
@@ -39,7 +51,7 @@
             </div>
             <br />
         }
-    </div> 
+    </div>
 }
 else
 {
@@ -64,7 +76,9 @@ else
 
     private List<AnswerUser> userAnswersById = new List<AnswerUser>();
 
-    
+    private int currentSegmentId; 
+    private string errorMessage = "";
+    private bool displayErrorMessage = true;
 
     private List<Category> categories;
     private List<AnswerUser>? userAnswers;
@@ -99,7 +113,7 @@ else
     {
         if (segments.Any())
         {
-             // låt user starta första segment
+            // låt user starta första segment
             if (segmentId == segments.First().SegmentId)
             {
                 NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
@@ -107,7 +121,7 @@ else
                 // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
             }
 
-             // kolla om tidigare segement är klar med -1 annars 0 (använd linq)
+            // kolla om tidigare segement är klar med -1 annars 0 (använd linq)
             var previousSegmentId = segments
                 .OrderBy(s => s.SegmentId)
                 .FirstOrDefault(s => s.SegmentId >= segmentId - 1)?.SegmentId ?? 0;
@@ -120,12 +134,18 @@ else
                 double percentCorrect = previousSegment.CalculateCorrectAnswers(userAnswersbyid, userId);
 
                 if (percentCorrect >= 80)
-                {    
+                {
                     NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
-                    // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+                }
+                else
+                {
+                    errorMessage = "Ni måste slutföra den första/tidigare segment för att kunna fortsätta till denna";
+
+                    // fixa denna och displaya på endast segment som inte är slutförd - använd segmentId för att displayas på.
                 }
             }
         }
+        // Sätt segmentId till currentId och uppdatera i cSID. If checks finns på foreachen.
+        currentSegmentId = segmentId;
     }
 }
-    
