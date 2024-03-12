@@ -1,13 +1,21 @@
 ﻿@page "/home"
 
+@using Microsoft.AspNetCore.Identity
+@using ValhallaVaultCyberAwereness.Data
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject QuestionRepo questionRepo
 @inject SegmentRepo segmentRepo
-@inject CategoryRepo categoryRepo 
+@inject CategoryRepo categoryRepo
 @inject NavigationManager NavigationManager
+@inject AnswerRepo answerRepo
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@inject AuthenticationStateProvider AuthStateProvider
+
 
 <PageTitle>Home</PageTitle>
 
@@ -15,16 +23,14 @@
     <h1 class="mt-5">Step into the Cyber Sentinel Training Hub at Valhalla Vault for your Cybersecurity Education Journey</h1>
 
     <div class="container py-4">
-        <header class="pb-1 border-bottom">
-            <div class="row align-items-center">
-                <div class="col-auto">
-                    <img src="Images/logga.png" style="height: 50px; width: 50px;">
-                </div>
-                <div class="col">
-                    <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
-                </div>
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="Images/logga.png" style="height: 50px; width: 50px;">
             </div>
-        </header>
+            <div class="col">
+                <span class="fs-4">be a part AB | Human-Centered Digital Solutions</span>
+            </div>
+        </div>
 
         <div class="jumbotron jumbotron-fluid rounded-3" style="position: relative; overflow: hidden;">
             <video autoplay muted loop style="position: fixed; object-fit: cover; z-index: -1; top: 0; left: 0; width: 100%; height: 100%;">
@@ -58,23 +64,49 @@
         </ul>
     </div>
 
-    <datalist id="items">
-        @foreach (var item in ChosenItems)
-        {
-            <option value="@item"></option>
-        }
-    </datalist>
+    @if (categories != null && userAnswersbyid != null)
+    {
+        <div class="row mt-3">
+            @foreach (var item in categories)
+            {
+                <div class="col-md-4">
+                    <a href="/segmentpage/@item.CategoryId">
+                        <h4>@item.Categories</h4>
+                    </a>
+                    <ul>
+                        @foreach (var segment in item.Segments)
+                        {
+                            <li>
+                                <span>@segment.SegmentTitle</span>
+                                <span>@segment.CalculateCorrectAnswers(userAnswersbyid, @user).ToString("F2")%</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    }
 
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <div class="alert alert-danger mt-3">@ErrorMessage</div>
     }
-</div>
 
+</div>
 @code {
+
+    string? user;
+    private List<Question>? questions;
+    private List<Segment>? segments;
+    private List<Category>? categories;
+    private List<AnswerUser>? userAnswersbyid;
     private string? Search { get; set; }
     private string? ErrorMessage { get; set; }
-    private List<string> Items { get; set; } = new List<string> { "Att skydda sig mot bedrägeri", "Cybersäkerhet för företag", "Cyberspionage" };
+    private List<string> Items { get; set; } = new List<string> {};
+    private List<AnswerUser>? userAnswers;
+    private List<Question>? questionsget = new List<Question>();
+
+
 
     private List<string> ChosenItems
     {
@@ -98,9 +130,12 @@
         {
             if (!string.IsNullOrEmpty(Search))
             {
-                if (Items.Contains(Search, StringComparer.OrdinalIgnoreCase))
+                // Kontrollera om söksträngen matchar någon kategori
+                var matchingCategory = categories.FirstOrDefault(cat => cat.Categories.Equals(Search, StringComparison.OrdinalIgnoreCase));
+                if (matchingCategory != null)
                 {
-                    NavigateTo(Search);
+                    // Om en matchande kategori hittas, navigera till kategorisidan för den kategorin
+                    NavigateTo(matchingCategory.Categories);
                 }
                 else
                 {
@@ -118,8 +153,58 @@
         }
     }
 
-    private void NavigateTo(string item)
+    private void NavigateTo(string category)
     {
-        NavigationManager.NavigateTo($"/categorypage?category={item}");
+        NavigationManager.NavigateTo($"/categorypage?category={category}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authenticCheck = await AuthStateProvider.GetAuthenticationStateAsync();
+        var loggedInUser = authenticCheck.User;
+
+        if (loggedInUser != null)
+        {
+            var userObject = await UserManager.GetUserAsync(loggedInUser);
+
+            if (userObject != null)
+            {
+                user = userObject.Id;
+
+                if (!string.IsNullOrEmpty(user))
+                {
+                    userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(user);
+                }
+                else
+                {
+                    
+                }
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+            
+        }
+
+        // Hämta alla kategorier
+        categories = await categoryRepo.GetAllCategoriesAsync();
+
+        // Hämta alla segment
+        segments = await segmentRepo.GetAllSegmentAsync();
+
+        // Hämta alla frågor
+        questions = await questionRepo.GetAllQuestionAsync();
+
+        // Hämta alla svar för en användare
+        userAnswers = await answerRepo.GetAllAnswersAsync();
+
+        // Hämta alla svar för en specifik användare baserat på användar-ID
+        userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(user);
+
     }
 }
