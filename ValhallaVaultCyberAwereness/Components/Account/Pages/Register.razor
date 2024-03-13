@@ -14,11 +14,8 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
-
 @using ValhallaVaultCyberAwereness.Components.Layout
 @layout EmptyLayout
-
-
 <PageTitle>Register</PageTitle>
 
     <div class="container py-4">
@@ -38,7 +35,6 @@
             <source src="/Videos/circuit.mp4" type="video/mp4">
         </video>
         <div class="container-fluid py-5 d-flex justify-content-center align-items-center">
-
         
      
     <div class="col-md-4">
@@ -65,23 +61,38 @@
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
             <div>
+                        <label>
+                            <InputCheckbox type="checkbox" @bind-Value="Input.AgreeToSomething" />
+                            Jag har läst och förstått villkoren.
+                        </label>
+            </div>
+            <div>
                         <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
             </div>
-       
+            <div>
+                        @if (Input.AgreeToSomething == false )
+                        {
+                            <div>
+                                <br />
+                                <p font-size:larger"><b>@errorMessage</b></p>
+                            </div>
+                        
+                        }
+            </div>
             <div>
                         <p class="pt-1">
                             <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Login", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))" style="color: white">Already have a Account? Sign in.</a>
                         </p>
             </div>
         </EditForm>
-    </div>
-
+        </div>
 </div>
 </div>
 </div>
 
 
 @code {
+    private string errorMessage = "";
     private IEnumerable<IdentityError>? identityErrors;
 
     [SupplyParameterFromForm]
@@ -92,8 +103,15 @@
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
+  
     public async Task RegisterUser(EditContext editContext)
     {
+        if (Input.AgreeToSomething == false)
+        {
+           
+            errorMessage = "Du måste godkänna villkoren för att kunna skapa ett konto ";
+            return; //Så vi inte fortsätter metoden.
+        }
         var user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -168,5 +186,7 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        public bool AgreeToSomething { get; set; }
     }
 }

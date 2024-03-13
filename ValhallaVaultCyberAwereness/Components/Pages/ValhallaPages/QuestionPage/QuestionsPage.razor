@@ -15,6 +15,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@attribute [Authorize]
 
 
 <h3>Frågor</h3>
@@ -101,6 +102,10 @@
 				<br />
 				<button class=" btn btn-outline-dark btn-lg" style="text-align:center; color: antiquewhite;" type="button" @onclick="@Reset">Starta igen?</button>
 				<br />
+				<br />
+				<button class=" btn btn-outline-dark btn-lg" style="text-align:center; color: antiquewhite;" type="button" @onclick="@GoToCategoryPage">Gå till kategorier</button>
+				<br />
+			
 			</div>
 			
 		</div>
@@ -193,6 +198,20 @@
 		IsAnswerCorrect = false;
 		selectedAnswer = null;
 	}
+
+
+	private void GoToCategoryPage() 
+	{
+		// gå till Categoriy PAge
+		navigationManager.NavigateTo("/categorypage");
+	}
+
+	private void GoToSegment() 
+	{
+		// Gå till nästa segment
+
+	}
+
 
 	private void ChangeQuestion() //Hålla koll på vilken fråga man är på. 
 	{
