@@ -19,7 +19,7 @@
 <EditForm Model="Ticket" OnValidSubmit="HandleSubmit">
 	<div class="row">
 
-		<div class="col-lg-4">
+		<div class="col-lg-8">
 			<label>What part of the app are you having issues with?</label>
 			<InputSelect style="width:370px" @bind-Value="Ticket.ProblemArea" class="form-select">
 				<option value="">Please choose an option</option>   @* TODO: Validate option! *@
@@ -32,10 +32,9 @@
 			</InputSelect>
 		</div>
 
-@* 		TODO: How to validate this as an email adress?
- *@		<div class="col-lg-4">
+		<div class="col-lg-8">
 			<label>Email:</label>
-			<InputText @bind-Value="Ticket.EmailAdress" class="form-control"></InputText>
+			<InputText style="width:200px" @bind-Value="Ticket.EmailAdress" class="form-control"></InputText>
 		</div>
 
 	
