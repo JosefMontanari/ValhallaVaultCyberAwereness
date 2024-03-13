@@ -31,6 +31,10 @@
                 @if (percentCorrect < 80)
                 {
                     <p>Du har mindre än 80% rätt i detta segment</p>
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <p>@errorMessage</p>
+                    }
                 }
                 else if (percentCorrect >= 80)
                 {
@@ -38,6 +42,7 @@
                 }
             </div>
             <br />
+          
         }
     </div> 
 }
@@ -64,7 +69,7 @@ else
 
     private List<AnswerUser> userAnswersById = new List<AnswerUser>();
 
-    
+    private string errorMessage = "";
 
     private List<Category> categories;
     private List<AnswerUser>? userAnswers;
@@ -99,7 +104,7 @@ else
     {
         if (segments.Any())
         {
-             // låt user starta första segment
+            // låt user starta första segment
             if (segmentId == segments.First().SegmentId)
             {
                 NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
@@ -107,7 +112,7 @@ else
                 // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
             }
 
-             // kolla om tidigare segement är klar med -1 annars 0 (använd linq)
+            // kolla om tidigare segement är klar med -1 annars 0 (använd linq)
             var previousSegmentId = segments
                 .OrderBy(s => s.SegmentId)
                 .FirstOrDefault(s => s.SegmentId >= segmentId - 1)?.SegmentId ?? 0;
@@ -123,6 +128,11 @@ else
                 {    
                     NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
                     // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+                }
+                else
+                {
+                    errorMessage = "Ni måste slutföra den första/tidigare segment för att kunna fortsätta till denna";
+                    // fixa denna och displaya på endast segment som inte är slutförd - använd segmentId för att displayas på.
                 }
             }
         }
