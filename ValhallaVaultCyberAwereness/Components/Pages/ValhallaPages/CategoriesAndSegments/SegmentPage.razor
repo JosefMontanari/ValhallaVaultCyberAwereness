@@ -28,23 +28,28 @@
                     <h3><strong>@segment.SegmentTitle</strong></h3>
                 </button>
 
-                @if (percentCorrect < 80)
+
+                @*Om segmentId i loopen är lika med valt segment: currentSegmentId, så visa visa en error om de andra 80% är mött. Visa errormessage på vald segment *@
+                @if (segment.SegmentId == currentSegmentId)
                 {
                     <p>Du har mindre än 80% rätt i detta segment</p>
+                    // visa error hårdkodad error i metoden istället för: mindre än 80%
                     @if (!string.IsNullOrEmpty(errorMessage))
                     {
                         <p>@errorMessage</p>
                     }
                 }
-                else if (percentCorrect >= 80)
+
+                @*Om  percentCorrect är mindre än 80 && vald segmentId inte är lika med currentSegmentId, visa deras % *@
+                @if (percentCorrect > 0 && segment.SegmentId != currentSegmentId)
                 {
-                    <p>Antal rätt i detta segment: @percentCorrect.ToString("F2")%</p>
+                    <p>Antal rätt i detta segment: @percentCorrect.ToString("F2")% </p>
                 }
             </div>
             <br />
           
         }
-    </div> 
+    </div>
 }
 else
 {
@@ -69,7 +74,10 @@ else
 
     private List<AnswerUser> userAnswersById = new List<AnswerUser>();
 
+
+    private int currentSegmentId; 
     private string errorMessage = "";
+    private bool displayErrorMessage = true;
 
     private List<Category> categories;
     private List<AnswerUser>? userAnswers;
@@ -125,9 +133,13 @@ else
                 double percentCorrect = previousSegment.CalculateCorrectAnswers(userAnswersbyid, userId);
 
                 if (percentCorrect >= 80)
-                {    
+                {
                     NavigationManager.NavigateTo($"/subcategory/{categoryId}/{segmentId}");
-                    // Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
+                }
+                else
+                {
+                    errorMessage = "Ni måste slutföra minst 80% på segmentet innan detta";
+                    // fixa denna och displaya på endast segment som inte är slutförd - använd segmentId för att displayas på.
                 }
                 else
                 {
@@ -136,6 +148,7 @@ else
                 }
             }
         }
+        // Sätt segmentId till currentId och uppdatera i cSID. If checks finns på foreachen.
+        currentSegmentId = segmentId;
     }
 }
-    
