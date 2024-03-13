@@ -32,6 +32,7 @@
                 @*Om segmentId i loopen är lika med valt segment: currentSegmentId, så visa visa en error om de andra 80% är mött. Visa errormessage på vald segment *@
                 @if (segment.SegmentId == currentSegmentId)
                 {
+                    <p>Du har mindre än 80% rätt i detta segment</p>
                     // visa error hårdkodad error i metoden istället för: mindre än 80%
                     @if (!string.IsNullOrEmpty(errorMessage))
                     {
@@ -46,6 +47,7 @@
                 }
             </div>
             <br />
+          
         }
     </div>
 }
@@ -71,6 +73,7 @@ else
     private Segment segment = new Segment();
 
     private List<AnswerUser> userAnswersById = new List<AnswerUser>();
+
 
     private int currentSegmentId; 
     private string errorMessage = "";
@@ -136,6 +139,11 @@ else
                 else
                 {
                     errorMessage = "Ni måste slutföra minst 80% på segmentet innan detta";
+                    // fixa denna och displaya på endast segment som inte är slutförd - använd segmentId för att displayas på.
+                }
+                else
+                {
+                    errorMessage = "Ni måste slutföra den första/tidigare segment för att kunna fortsätta till denna";
                     // fixa denna och displaya på endast segment som inte är slutförd - använd segmentId för att displayas på.
                 }
             }
