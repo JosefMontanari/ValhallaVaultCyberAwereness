@@ -1,5 +1,4 @@
-﻿@page "/questionpage/{questionId:int}"
-@page "/questionpage/{categoryId:int}/{subCategoryId:int}"
+﻿@page "/questionpage/{categoryId:int}/{subCategoryId:int}"
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
@@ -18,11 +17,11 @@
 @attribute [Authorize]
 
 
-<h3>Frågor</h3>
-<br />
-<br />
 @if (questionsForPage != null && canStartOrNot == true)
 {
+	<h3>Frågor</h3>
+	<br />
+	<br />
 
 @if (CounterIndexQ < questionsForPage.Count)
 {
@@ -105,19 +104,15 @@
 				<br />
 				<button class=" btn btn-outline-dark btn-lg" style="text-align:center; color: antiquewhite;" type="button" @onclick="@GoToCategoryPage">Gå till kategorier</button>
 				<br />
-			
 			</div>
-			
 		</div>
-		
 	}
 }
 
-
 @code {
-	private int CounterIndexQ = 0;
+	private int CounterIndexQ = 0; // För att hålla koll på vilken fråga man är i
 	[Parameter]
-	public int categoryId { get; set; }
+	public int categoryId { get; set; } 
 
 	[Parameter]
 	public int subCategoryId { get; set; }
@@ -136,17 +131,13 @@
 
 	private List<Segment> segments = new List<Segment>();
 
-	private List<Question> questions = new List<Question>();
 	[Inject]
 	private SegmentRepo segmentRepo { get; set; }
-	[Inject]
-	private CategoryRepo categoryRepo { get; set; }
+
 	[Inject]
 	private QuestionRepo questionRepo { get; set; }
 	[Inject]
 	private NavigationManager navigationManager { get; set; }
-
-	private Category selectedCategory;
 
 	private string? selectedAnswer;
 	private bool IsAnswerCorrect;
@@ -186,14 +177,9 @@
 					canStartOrNot = true;
 					// Sätt en bool til true och ta bort navi i subcategorypage & question page senare för att inte kunna fula
 				}
-				else
-				{
-					
-				}
 			}
 		}
 	}
-
 
 	private void Reset() //Starta om frågorna. counterindex startar om frågorna, men resten av variablerna nedan reseta så så inte "kontrolellera svar" buggade
 	{
@@ -209,13 +195,6 @@
 		// gå till Categoriy PAge
 		navigationManager.NavigateTo("/categorypage");
 	}
-
-	private void GoToSegment() 
-	{
-		// Gå till nästa segment
-
-	}
-
 
 	private void ChangeQuestion() //Hålla koll på vilken fråga man är på. 
 	{
@@ -264,31 +243,16 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-
-		if (questionId != 0)
-		{
-			question = await questionRepos.GetQuestionByIdAsync(questionId);
-
-
-		}
-		else
-		{
-
 			segments = await segmentRepo.GetSegmentsByCategoryIdAsync(categoryId);
-			// displaya vald category
-			selectedCategory = await categoryRepo.GetCategoryByIdAsync(categoryId);
 			// Displaya questions will varje segment
-			questions = await questionRepo.GetAllQuestionAsync();
 			questionsForPage = await questionRepo.GetSegmentQuestionAsync(subCategoryId);
-
 			var authenticCheck = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 			var loggedInUser = authenticCheck.User;
 			var userObject = await UserManager.GetUserAsync(loggedInUser);
 			userId = userObject.Id;
 			userAnswersbyid = await answerRepo.GetUserAnswersByIdAsync(userId);
-
 			StartSegment(subCategoryId);
-		}
+		
 	}
 
 	// För at komma åt Localstorage och åter-rendera sidan
@@ -347,7 +311,5 @@
 		{
 			Console.WriteLine("User not found");
 		}
-
-		
-	}
+		}
 }

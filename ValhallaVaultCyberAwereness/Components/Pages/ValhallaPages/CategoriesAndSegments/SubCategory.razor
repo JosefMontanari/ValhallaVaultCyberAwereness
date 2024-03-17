@@ -3,15 +3,22 @@
 @using ValhallaVaultCyberAwereness.Data.Models
 @using ValhallaVaultCyberAwereness.Service
 @inject ValhallaVaultCyberAwereness.Service.CategoryRepo CategoryRepo
+@inject NavigationManager navigationmanager
 @attribute [Authorize]
 
-@if(segments.Count() != 0)
+
+@if (segments.Count() != 0)
 {
-    <h3>@segments.FirstOrDefault(t =>t.SegmentId == subCategoryId).SegmentTitle </h3>
+    if (segments.Count() >= subCategoryId)
+    {
+        <h3>@segments.FirstOrDefault(t => t.SegmentId == subCategoryId && t.CategoryId == categoryId).SegmentTitle </h3>
+    }
 }
 
 @if (segments.Any())
 {
+    @if (CheckSegment())
+    {
     <div>
                 <!--Displaya alla questions will varje fråga-->
         <div>
@@ -24,6 +31,8 @@
         </div>
     </div>
 }
+}
+
 else
 {
     <p>Hmm.. error 404.</p>
@@ -31,6 +40,28 @@ else
 
 
 @code {
+
+    private bool CheckSegment()
+    {
+        @if (segments.Count() != 0)
+        {
+            foreach(var seg in segments)
+            {
+                if (seg.CategoryId == categoryId && seg.SegmentId == subCategoryId)
+                {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+        return false;
+    }
+	private void GoToCategoryPage() 
+	{
+		// gå till Categoriy PAge
+		navigationManager.NavigateTo("/categorypage");
+	}
     private bool IsLoading { get; set; }
     bool runload = true;
     private List<Segment> segments = new List<Segment>();
