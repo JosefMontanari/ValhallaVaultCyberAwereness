@@ -67,7 +67,7 @@ public class FredrikTestUnit
         {
             new Segment { SegmentId = 2 },
             new Segment { SegmentId = 3 },
-         // new Segment { SegmentId = 4 }
+          new Segment { SegmentId = 4 }
         };
 
         var testaStartSegment = new TestaStartSegment(segments);
@@ -77,7 +77,7 @@ public class FredrikTestUnit
 
         Assert.True(testaStartSegment.canStartOrNot, canStartOrNot.ToString());
 
-
+        // hehe
     }
 }
 
