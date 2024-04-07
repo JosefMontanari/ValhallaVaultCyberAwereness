@@ -1,7 +1,7 @@
 ﻿using ValhallaVaultCyberAwereness.Components.Pages.ValhallaPages.QuestionPage;
 using ValhallaVaultCyberAwereness.Data.Models;
 
-namespace UnitTest;
+namespace UnitTest.Fredrik;
 
 public class FredrikTestUnit
 {
@@ -48,6 +48,7 @@ public class FredrikTestUnit
             new Question {QuestionId = 1, CorrectAnswer = "2"},
             new Question {QuestionId = 2, CorrectAnswer = "3"},
             //new Question {QuestionId = 3, CorrectAnswer = "4"}
+            //new Question {QuestionId = 3, CorrectAnswer = "5"}
         };
 
 
