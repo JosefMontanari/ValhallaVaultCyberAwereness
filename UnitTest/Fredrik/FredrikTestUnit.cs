@@ -1,7 +1,7 @@
 ﻿using ValhallaVaultCyberAwereness.Components.Pages.ValhallaPages.QuestionPage;
 using ValhallaVaultCyberAwereness.Data.Models;
 
-namespace UnitTest;
+namespace UnitTest.Fredrik;
 
 public class FredrikTestUnit
 {
@@ -48,6 +48,7 @@ public class FredrikTestUnit
             new Question {QuestionId = 1, CorrectAnswer = "2"},
             new Question {QuestionId = 2, CorrectAnswer = "3"},
             //new Question {QuestionId = 3, CorrectAnswer = "4"}
+            //new Question {QuestionId = 3, CorrectAnswer = "5"}
         };
 
 
@@ -67,7 +68,7 @@ public class FredrikTestUnit
         {
             new Segment { SegmentId = 2 },
             new Segment { SegmentId = 3 },
-         // new Segment { SegmentId = 4 }
+          new Segment { SegmentId = 4 }
         };
 
         var testaStartSegment = new TestaStartSegment(segments);
@@ -77,7 +78,7 @@ public class FredrikTestUnit
 
         Assert.True(testaStartSegment.canStartOrNot, canStartOrNot.ToString());
 
-
+        // hehe
     }
 }
 
