@@ -18,7 +18,16 @@ namespace UnitTest.Josef
 			new Segment { SegmentId = 3 },
 		};
 
+			var segmentsToTest = new TestSegment(segments);
 
+			bool canStartOne = await segmentsToTest.StartSegment(0);
+			Assert.True(canStartOne);
+
+			bool canStartTwo = await segmentsToTest.StartSegment(1);
+			Assert.False(canStartTwo);
+
+			bool canStartThree = await segmentsToTest.StartSegment(2);
+			Assert.False(canStartThree);
 
 		}
 	}
