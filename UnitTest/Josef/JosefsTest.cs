@@ -1,6 +1,6 @@
 ﻿using ValhallaVaultCyberAwereness.Data.Models;
 
-namespace UnitTest
+namespace UnitTest.Josef
 {
 	public class JosefsTest
 	{
