@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "fdd90bdd-6843-4fb5-b962-76c91ff855e0",
+		"name": "Valhalla_postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33871255"
+	},
+	"item": [
+		{
+			"name": "Check if connection is successful",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7000/api/Question",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"Question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a question",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"check if response code contains sucess text\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Successful POST request\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Title\": \"!TEST En titel till en fråga\",\r\n    \"Questions\":\"Detta är frågan?\",\r\n    \"Explanation\": \"förklarande text till frågan\",\r\n    \"CorrectAnswer\":\"Det korrekta svaret\",\r\n    \"PossibleAnswers\": [ \"Det korrekta svaret\", \"Detta är andra svaret\", \"Detta är tredje svaret\"],\r\n    \"SegmentId\":\"1\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7000/api/Question",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"Question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a question",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"check if response code contains sucess text\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Successful update\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"QuestionId\":46,\r\n    \"Title\": \"!TEST uppdaterad titel\",\r\n    \"Explanation\": \"Uppdaterad förklaring\",\r\n    \"Questions\":\"Uppdaterad fråga?\",\r\n    \"CorrectAnswer\":\"Det uppdaterade korrekta svaret\",\r\n    \"PossibleAnswers\": [ \"Det uppdaterade korrekta svaret\", \"Detta är uppdaterade andra svaret\", \"Detta är uppdaterade tredje svaret\"],\r\n    \"SegmentId\":\"1\"\r\n\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7000/api/question",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a question with only id FAIL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"QuestionId\":5}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7000/api/question",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a question with ID and title",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"QuestionId\":47 ,\r\n    \"Title\": \"!TEST En titel till en fråga\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7000/api/question",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"question"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
