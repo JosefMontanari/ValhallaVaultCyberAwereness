@@ -40,7 +40,7 @@ namespace ValhallaVaultCyberAwereness.Controllers
         public async Task<IActionResult> UpdateQuestion(Question questions)
         {
             await _questionRepo.UpdateQuestionAsync(questions);
-            return Ok();
+            return Ok("Successful update");
         }
 
         [HttpDelete]
